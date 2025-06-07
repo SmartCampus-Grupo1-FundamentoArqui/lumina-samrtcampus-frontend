@@ -1,0 +1,58 @@
+<div class="container login-container" fxLayout="row" fxLayoutAlign="center center">
+    <form [formGroup]="registerForm" fxFlex="30%" fxFlex.sm="50%" fxFlex.xs="90%">
+        <mat-card>
+            <mat-card-title>ROCKET<span>NOTES</span></mat-card-title>
+            <mat-card-subtitle>Register your account</mat-card-subtitle>
+            <mat-card-content>
+
+                <div class="full-width role-selection">
+                    <mat-radio-group formControlName="userRole" aria-label="User Role">
+                        <mat-radio-button value="admin" aria-label="Administrator">Administrator</mat-radio-button>
+                        <mat-radio-button value="teacher" aria-label="Teacher">Teacher</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+
+                <mat-form-field class="full-width">
+                    <input id="emailInput" matInput placeholder="Email" formControlName="email" autocomplete="email" type="email" aria-label="Email">
+                    <mat-error id="invalidEmailError" *ngIf="registerForm.controls['email'].hasError('email')">
+                        Please enter a valid email address
+                    </mat-error>
+                    <mat-error id="requiredEmailError" *ngIf="registerForm.controls['email'].hasError('required')">
+                        Email is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                    <input id="passwordInput" matInput placeholder="Password" formControlName="password" [type]="hidePassword ? 'password' : 'text'" autocomplete="new-password" aria-label="Password">
+
+                    <mat-error id="requiredPasswordError" *ngIf="registerForm.controls['password'].hasError('required')">
+                        Password is <strong>required</strong>
+                    </mat-error>
+                    <mat-error id="minLengthPasswordError" *ngIf="registerForm.controls['password'].hasError('minlength')">
+                        Password must be at least 6 characters long
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                    <input id="passwordConfirmInput" matInput placeholder="Confirm Password" formControlName="confirmPassword" [type]="hidePasswordConfirm ? 'password' : 'text'" autocomplete="new-password" aria-label="Confirm Password">
+
+                    <mat-error id="requiredPasswordConfirmError" *ngIf="registerForm.controls['confirmPassword'].hasError('required')">
+                        Please confirm your password
+                    </mat-error>
+                    <mat-error id="passwordMismatchError" *ngIf="registerForm.hasError('mismatch')">
+                        Passwords do not match
+                    </mat-error>
+                </mat-form-field>
+
+            </mat-card-content>
+
+            <mat-card-actions class="login-actions">
+                <button id="register" mat-raised-button color="primary" [disabled]="registerForm.invalid || loading" (click)="register()" aria-label="Register">Register</button>
+                <button id="cancel" mat-button (click)="cancel()" aria-label="Cancel">Back to Login</button>
+            </mat-card-actions>
+
+        </mat-card>
+
+        <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+    </form>
+</div>

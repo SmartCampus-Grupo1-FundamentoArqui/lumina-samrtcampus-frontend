@@ -1,0 +1,8 @@
+.mat-dialog-container{
+
+    background-color: #1EC089;
+    color: white; /* Cambia el color del texto a blanco para que sea visible en el fondo verde */
+    float: right; /* Alinea el botón a la derecha */
+    border-radius: 10px;
+    padding: 15px 15px 15px ;
+}

@@ -1,0 +1,38 @@
+
+.single-cards {
+
+  margin: 20px 0;
+}
+
+.single-card .mat-card-avatar {
+  width: 50px;
+  height: 50px;
+}
+
+.single-card .mat-icon {
+  font-size: 55px;
+}
+
+.projects-card>mat-card-content {
+  max-height: 400px;
+  overflow: auto;
+}
+
+.example-card {
+  margin: 10px;
+  max-width: 400px;
+  border-radius: 20px;
+  text-align: left;
+}
+
+.example-header-image {
+  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+  background-size: cover;
+}
+
+.mat-button {
+  background-color: #1EC089;
+  color: white; /* Cambia el color del texto a blanco para que sea visible en el fondo verde */
+  float: right; /* Alinea el botón a la derecha */
+  border-radius: 30px;
+}

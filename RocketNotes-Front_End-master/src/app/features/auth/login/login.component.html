@@ -1,0 +1,56 @@
+<div class="container login-container" fxLayout="row" fxLayoutAlign="center center">
+    <div fxFlex="30%" fxFlex.sm="50%" fxFlex.xs="100%" aria-label="Educational Image">
+        <img src="../../../../assets/images/login.png" alt="Educational Image" class="full-width">
+    </div>
+
+    <form [formGroup]="loginForm" fxFlex="30%" fxFlex.sm="50%" fxFlex.xs="100%">
+        <mat-card>
+            <mat-card-title>ROCKET<span>NOTES</span></mat-card-title>
+            <mat-card-subtitle>Log in to your account</mat-card-subtitle>
+            <mat-card-content>
+                <div class="full-width role-selection">
+                    <mat-radio-group formControlName="userRole" aria-label="User Role">
+                        <mat-radio-button value="admin" aria-label="Administrator">Administrator</mat-radio-button>
+                        <mat-radio-button value="teacher" aria-label="Teacher">Teacher</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+
+                <mat-form-field class="full-width">
+                    <input id="emailInput" matInput placeholder="Email" formControlName="email" autocomplete="email"
+                           type="email" aria-label="Email">
+                    <mat-error id="invalidEmailError" *ngIf="loginForm.controls['email'].hasError('email')">
+                        Please enter a valid email address
+                    </mat-error>
+                    <mat-error id="requiredEmailError" *ngIf="loginForm.controls['email'].hasError('required')">
+                        Email is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                    <input id="passwordInput" matInput placeholder="Password" formControlName="password" type="password"
+                           autocomplete="current-password" aria-label="Password">
+                    <mat-error id="requiredPasswordError" *ngIf="loginForm.controls['password'].hasError('required')">
+                        Password is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+
+                <div class="full-width">
+                    <mat-slide-toggle formControlName="rememberMe" aria-label="Remember Me">Remember my email address</mat-slide-toggle>
+                </div>
+            </mat-card-content>
+
+            <mat-card-actions class="login-actions">
+                <button mat-raised-button id="login" color="primary" [disabled]="loginForm.invalid || loading"
+                        (click)="login()" aria-label="Login">Login</button>
+                <button mat-button id="resetPassword" (click)="resetPassword()" type="button" aria-label="Reset Password">Reset Password</button>
+
+            </mat-card-actions>
+
+            <div class="register-account">
+                <button mat-button id="registerAccount" (click)="registerAccount()" type="button" aria-label="Create New Account">Create New Account</button>
+            </div>
+        </mat-card>
+
+        <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+    </form>
+</div>

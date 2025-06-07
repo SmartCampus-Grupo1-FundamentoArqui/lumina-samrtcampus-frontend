@@ -1,0 +1,22 @@
+.content-container {
+  margin-top: 5%;
+  padding-bottom: 10%;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+table {
+  width: 100%;
+}
+.button-add-student {
+  background-color: #1EC089;
+  color: white;
+}
+
+.button-student, .button-classroom{
+  background-color: #1EC089;
+  color: white;
+}
+
+.spacer{
+  flex: 1 1 auto;
+}

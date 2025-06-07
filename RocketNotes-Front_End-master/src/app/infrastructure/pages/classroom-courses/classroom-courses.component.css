@@ -1,0 +1,52 @@
+
+.content-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+mat-grid-list {
+  width: 100%;
+  margin: 0 auto;
+}
+
+
+mat-card img {
+  width: 100%;
+  height: auto;
+}
+
+
+mat-card {
+  padding: 16px;
+
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Button styling */
+mat-card-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+button.mat-button {
+  background-color: green;
+  color: white;
+  border-radius: 8px;
+  padding: 10px 20px;
+  text-transform: uppercase;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  mat-grid-list {
+    cols: 1;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  mat-grid-list {
+    cols: 2;
+  }
+}

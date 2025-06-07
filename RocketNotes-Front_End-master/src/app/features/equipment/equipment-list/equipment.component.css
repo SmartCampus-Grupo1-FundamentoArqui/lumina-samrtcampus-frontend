@@ -1,0 +1,22 @@
+.table{
+    margin-left:  20px;
+    margin-right: 20px;
+}
+ul{
+    padding-right: 50px;
+    padding-left: 50px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+.button{
+     background-color: #1ec089;
+     border-color: transparent;
+     border-radius: 5px;
+     height: 35px;
+     color: white;
+     width: 200px;
+
+ }

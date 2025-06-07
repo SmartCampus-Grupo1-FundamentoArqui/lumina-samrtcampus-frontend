@@ -1,0 +1,18 @@
+.spacer{
+    width: 150px;
+}
+.button {
+    color: white;
+    background-color: transparent;
+    border: transparent;
+    height: 100%;
+    font-size: 15px;
+}
+.activo{
+    border-bottom: 5px solid white;
+
+}
+.toolbar{
+    background-color: #1ec089;
+
+}

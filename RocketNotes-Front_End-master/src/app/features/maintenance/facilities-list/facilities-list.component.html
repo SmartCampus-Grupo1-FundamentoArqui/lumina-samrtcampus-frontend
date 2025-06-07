@@ -1,0 +1,11 @@
+<div style="padding: 50px">
+    <mat-toolbar class="toolbar">
+        <button (click)="buttonActivated('boton1')" [ngClass]="{'activo': activeButton==='boton1'}" [routerLink]="['/facilities-list']" class="button">
+            FACILITIES
+        </button>
+        <span class="spacer"></span>
+        <button (click)="buttonActivated('boton2')" [ngClass]="{'activo': activeButton==='boton2'}" [routerLink]="['/equipment-list']" class="button " >
+            CLASSROOM EQUIPMENT
+        </button>
+    </mat-toolbar>
+</div>

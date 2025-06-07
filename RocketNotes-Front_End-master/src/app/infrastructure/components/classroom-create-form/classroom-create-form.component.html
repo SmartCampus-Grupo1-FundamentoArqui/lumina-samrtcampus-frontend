@@ -1,0 +1,22 @@
+<div class="form-add-classroom-container">
+  <h2 mat-dialog-title>Create Classroom</h2>
+  <mat-dialog-content>
+    <div class="form-section">
+      <form (submit)="onSubmit()" #studentForm='ngForm' class="form-row">
+        <mat-form-field >
+          <input class="input-section" matInput placeholder="Section" name="section" required [(ngModel)]="classroom.section">
+        </mat-form-field>
+        <mat-form-field class="input-classroom">
+          <input matInput  placeholder="Room" name="room" required [(ngModel)]="classroom.classroom">
+        </mat-form-field >
+        <mat-form-field class="input-capacity">
+          <input matInput type="number" placeholder="Capacity" name="capacity"  required [(ngModel)]="classroom.capacity">
+        </mat-form-field>
+      </form>
+    </div>
+   </mat-dialog-content>
+  <mat-dialog-actions>
+    <button class="button-cancel" mat-raised-button mat-dialog-close color="warn" (click)="onCancel()">Cancel</button>
+    <button class="button-save" mat-raised-button color="primary">Save</button>
+  </mat-dialog-actions>
+</div>

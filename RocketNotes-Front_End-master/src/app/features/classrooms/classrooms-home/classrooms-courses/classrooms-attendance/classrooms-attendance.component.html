@@ -1,0 +1,37 @@
+<div class="container">
+    <h1>List of students from Classroom A21 - G1A</h1>
+    <button class="assistance-button" (click)="isAssistanceTaken ? saveAssistance() : openDialog()">
+        {{ isAssistanceTaken ? 'SAVE ASSISTANCE' : 'TAKE ASSISTANCE' }}
+    </button>
+    <table>
+        <thead>
+        <tr>
+            <th>LastName and FirstName</th>
+            <th class="aligned-cell" *ngFor="let attendance of students[0].attendance">{{ attendance.date }}
+            <button (click)="deleteAssistance(attendance.date)">Delete</button>
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let student of students">
+            <td class="aligned-cell">
+                <mat-card>
+                    <mat-card-header>
+                        <div mat-card-avatar class="example-header-image">
+                            <img class="avatar-image" src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Avatar">
+                        </div>
+                        <mat-card-title>{{student.name}}</mat-card-title>
+                    </mat-card-header>
+                </mat-card>
+            </td>
+
+
+            <td class="aligned-cell" *ngFor="let attendance of student.attendance" (click)="toggleAttendanceStatus(attendance)">
+                <!-- Usa ngClass para aplicar clases condicionalmente basado en el estado de asistencia -->
+                <span [ngClass]="{'present': attendance.status === 'present', 'absent': attendance.status === 'absent'}"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

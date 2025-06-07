@@ -1,0 +1,35 @@
+.form-add-classroom-container{
+
+  width: auto;
+}
+.mat-dialog-content{
+  width: 450px;
+}
+.form-section {
+  display: table;
+  width: 100%;
+}
+.button-cancel, .button-save{
+  background-color: #1EC089;
+  color: white;
+  width: 40%;
+
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+
+}
+
+.input-section{
+  width: 100%;
+
+}
+
+
+
+.footer-section {
+  display: flex;
+
+}

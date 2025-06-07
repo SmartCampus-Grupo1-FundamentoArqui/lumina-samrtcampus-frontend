@@ -1,0 +1,58 @@
+.avatar-image {
+    border-radius: 50%; /* Hace la imagen circular */
+    width: 40px; /* Ajusta el tamaño de la imagen */
+    height: 40px;
+}
+
+.aligned-cell {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.container {
+
+    max-width: 800px;
+    margin: auto;
+}
+
+.assistance-button {
+    background-color: #1EC089;
+    color: white; /* Cambia el color del texto a blanco para que sea visible en el fondo verde */
+    float: right; /* Alinea el botón a la derecha */
+    border-radius: 10px;
+    border-color: #1EC089;
+    padding: 15px 15px 15px ;
+}
+
+.assistance-button:hover{
+    background-color: #36be36;
+    color: white; /* Cambia el color del texto a blanco para que sea visible en el fondo verde */
+    float: right; /* Alinea el botón a la derecha */
+    border-radius: 10px;
+    padding: 15px 15px 15px ;
+}
+.assistance-button:active {
+    background-color: #3b803b; /* Cambia el color de fondo a azul cuando se presiona el botón */
+}
+
+
+table {
+    width: 100%;
+}
+
+/* Agrega estilos para los estados de presente y ausente */
+.present {
+    background-color: green;
+    border-radius:50%;
+    display:inline-block;
+    width:20px;
+    height:20px;
+}
+
+.absent {
+    background-color: red;
+    border-radius:50%;
+    display:inline-block;
+    width:20px;
+    height:20px;
+}

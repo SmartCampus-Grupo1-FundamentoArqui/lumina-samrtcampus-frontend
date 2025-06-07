@@ -1,0 +1,25 @@
+<div class="content-container">
+    <mat-toolbar-row>
+        <h1>List of classroom</h1>
+        <span class="spacer"></span>
+        <button mat-button class="button-classroom" (click)="openDialog('0ms', '0ms')" aria-label="Add classroom button">
+            ADD CLASSROOM
+        </button>
+    </mat-toolbar-row>
+    <mat-grid-list cols="3" rowHeight="350px">
+        <mat-grid-tile *ngFor="let course of courses">
+            <mat-card class="classroom-card">
+                <img mat-card-image src="https://images.pexels.com/photos/3573351/pexels-photo-3573351.png?auto=compress&cs=tinysrgb&fit=crop&h=150&w=400" alt="Photo of the classroom">
+                <mat-card-header>
+                    <mat-card-title>{{ course.course }}</mat-card-title>
+                    <mat-card-subtitle>{{ course.teacher }} students enrolled</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-actions>
+                    <button mat-button color="primary" (click)="viewCourseDetails(course)">View</button>
+                </mat-card-actions>
+            </mat-card>
+        </mat-grid-tile>
+    </mat-grid-list>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</div>

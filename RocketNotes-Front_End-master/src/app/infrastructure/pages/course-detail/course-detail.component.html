@@ -1,0 +1,12 @@
+<div *ngIf="course">
+    <h2>{{ course.course }}</h2>
+    <p>Teacher: {{ course.teacher }}</p>
+    <h1>{{ course.course }}</h1>
+    <p>Classroom: {{ course.room }}</p>
+    <p>Teacher: {{ course.teacher }}</p>
+    <p>Start time: {{ course.start_time }}</p>
+    <p>End time: {{ course.end_time }}</p>
+    <p>Days: {{ course.days }}</p>
+    <img [src]="course.image_url" alt="Course image">
+    <button mat-raised-button color="primary" (click)="goToDetailCoursesView()">Back to Courses</button>
+</div>

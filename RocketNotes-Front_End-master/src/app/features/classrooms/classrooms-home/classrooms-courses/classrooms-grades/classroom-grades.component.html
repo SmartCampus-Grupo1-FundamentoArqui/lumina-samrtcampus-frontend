@@ -1,0 +1,48 @@
+<div class="container">
+    <h1>List of students from Classroom A21 - G1A</h1>
+    <button *ngIf="!isAddingGrade" class="Assist" mat-button cdkFocusInitial (click)="openDialog()">New Grades</button>
+    <button *ngIf="isAddingGrade" class="Assist" mat-button cdkFocusInitial (click)="saveGrades()" [disabled]="!isValidGrade()">Save grades</button>
+    <table>
+        <thead>
+        <tr>
+            <th>LastName and FirstName</th>
+            <th *ngFor="let grade of students[0].grades; let i = index">Grade {{i + 1}}</th>
+            <th *ngIf="isAddingGrade">New Grade</th>
+            <th class="aligned-cell">Average</th>
+            <th class="aligned-cell">State</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let student of students">
+            <td class="aligned-cell">
+                <mat-card>
+                    <mat-card-header>
+                        <div mat-card-avatar class="example-header-image">
+                            <img class="avatar-image" src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Avatar">
+                        </div>
+                        <mat-card-title>{{student.name}}</mat-card-title>
+                    </mat-card-header>
+                </mat-card>
+            </td>
+
+            <td class="aligned-cell" *ngFor="let grade of student.grades">
+                {{grade}}
+            </td>
+
+            <td class="aligned-cell" *ngIf="isAddingGrade">
+                <input type="number" min="0" max="20" [(ngModel)]="student.newGrade">
+            </td>
+
+            <td class="aligned-cell">
+                {{student.average.toFixed(1)}}
+            </td>
+
+            <td class="aligned-cell state-cell">
+                <br><br>
+                <div class="state-indicator" [style.background-color]="student.state"></div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
