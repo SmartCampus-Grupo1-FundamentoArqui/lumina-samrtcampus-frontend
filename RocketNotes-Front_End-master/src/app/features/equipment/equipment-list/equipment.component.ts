@@ -32,7 +32,7 @@ export class EquipmentComponent implements OnInit {
 
   ngOnInit(): void {
     this.buttonStateService.setActiveButton('boton2');
-    this.apiService.get().subscribe({
+    this.apiService.getAll().subscribe({
       next:(response: any)=>{
        this.dataSource = response
         console.log(this.dataSource)
@@ -59,11 +59,9 @@ export class EquipmentComponent implements OnInit {
       if(result.name!=null){
         let equipment1 ={
           name:result.name,
-          quantity:result.quantity,
-          budget:result.budget,
-          creation:result.creation,
-          period:result.period,
-          state: result.state,
+          type: result.type || 'General',
+          status: result.state,
+          location: result.location || 'Campus'
         }
         this.apiService.create(equipment1).subscribe({
               next:(response:any)=>{

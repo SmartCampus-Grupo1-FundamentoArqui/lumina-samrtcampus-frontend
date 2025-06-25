@@ -18,20 +18,30 @@ export class ClassroomCapacityComponent implements OnInit {
   constructor(private classroomService: ClassroomsService, public dialog: MatDialog,private router: Router) {}
 
   ngOnInit() {
-
-    this.classroomService.get().subscribe({
-      next: (data: any) => {
-
-        this.dataSource = data;
-      },
-      error: (err) => console.error(err)
-    });
+    this.loadClassrooms();
   }
   openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
-    this.dialog.open(ClassroomCreateFormComponent, {
+    const dialogRef = this.dialog.open(ClassroomCreateFormComponent, {
       width: '550px',
       enterAnimationDuration,
       exitAnimationDuration,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Recargar la lista cuando se cierre el modal y se haya creado algo
+        this.loadClassrooms();
+      }
+    });
+  }
+
+  private loadClassrooms() {
+    this.classroomService.getAll().subscribe({
+      next: (data: any) => {
+        this.dataSource = data;
+        console.log('Aulas cargadas:', data);
+      },
+      error: (err: any) => console.error('Error cargando aulas:', err)
     });
   }
   navigateToAddStudent() {

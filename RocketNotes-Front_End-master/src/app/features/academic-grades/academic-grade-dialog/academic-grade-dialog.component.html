@@ -1,0 +1,62 @@
+<h1 mat-dialog-title>
+  {{ isEdit ? 'Editar Grado Académico' : 'Crear Grado Académico' }}
+</h1>
+
+<div mat-dialog-content>
+  <form [formGroup]="gradeForm" class="grade-form">
+    
+    <!-- Name Field -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nombre del Grado</mat-label>
+      <input matInput formControlName="name" placeholder="Ej: 1er Grado, 2do Grado, etc.">
+      <mat-error *ngIf="gradeForm.get('name')?.invalid && gradeForm.get('name')?.touched">
+        {{ getErrorMessage('name') }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Level Field -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nivel Educativo</mat-label>
+      <mat-select formControlName="level">
+        <mat-option *ngFor="let level of levelOptions" [value]="level.value">
+          {{ level.label }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="gradeForm.get('level')?.invalid && gradeForm.get('level')?.touched">
+        {{ getErrorMessage('level') }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Section Field -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Sección</mat-label>
+      <mat-select formControlName="section">
+        <mat-option *ngFor="let section of sectionOptions" [value]="section.value">
+          {{ section.label }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="gradeForm.get('section')?.invalid && gradeForm.get('section')?.touched">
+        {{ getErrorMessage('section') }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Capacity Field -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Capacidad de Estudiantes</mat-label>
+      <input matInput type="number" formControlName="capacity" min="1" max="50">
+      <mat-error *ngIf="gradeForm.get('capacity')?.invalid && gradeForm.get('capacity')?.touched">
+        {{ getErrorMessage('capacity') }}
+      </mat-error>
+    </mat-form-field>
+
+  </form>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" 
+          (click)="onSave()" 
+          [disabled]="gradeForm.invalid">
+    {{ isEdit ? 'Actualizar' : 'Crear' }}
+  </button>
+</div> 

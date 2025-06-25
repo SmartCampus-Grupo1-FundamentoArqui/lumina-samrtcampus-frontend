@@ -1,31 +1,45 @@
 <div class="form-add-courses-container">
-    <h2 mat-dialog-title>Create Course</h2>
+    <h2 mat-dialog-title>Crear Curso</h2>
     <mat-dialog-content>
         <div class="form-section">
             <form (submit)="onSubmit()" #courseForm='ngForm' class="form-row">
-                <mat-form-field>
-                    <input class="input-section" matInput placeholder="Classroom" name="room" required [(ngModel)]="course.room">
+                
+                <mat-form-field appearance="outline">
+                    <mat-label>Nombre del Curso</mat-label>
+                    <input class="input-section" matInput placeholder="Ej: Matemáticas, Historia, etc." 
+                           name="name" required [(ngModel)]="course.name">
                 </mat-form-field>
-                <mat-form-field>
-                    <input class="input-section" matInput placeholder="Course" name="course" required [(ngModel)]="course.course">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Grado Académico</mat-label>
+                    <mat-select name="gradeId" required [(ngModel)]="course.gradeId">
+                        <mat-option *ngFor="let grade of academicGrades" [value]="grade.id">
+                            {{grade.name}} - {{grade.level}} (Sección {{grade.section}})
+                        </mat-option>
+                    </mat-select>
                 </mat-form-field>
-                <mat-form-field>
-                    <input class="input-section" matInput placeholder="Start time" name="start_time" required [(ngModel)]="course.start_time">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Profesor (Opcional)</mat-label>
+                    <mat-select name="teacherId" [(ngModel)]="course.teacherId">
+                        <mat-option [value]="null">Sin asignar</mat-option>
+                        <mat-option *ngFor="let teacher of teachers" [value]="teacher.id">
+                            {{teacher.firstName}} {{teacher.lastName}}
+                        </mat-option>
+                    </mat-select>
                 </mat-form-field>
-                <mat-form-field>
-                    <input class="input-section" matInput placeholder="End time" name="end_time" required [(ngModel)]="course.end_time">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Horario</mat-label>
+                    <input class="input-section" matInput placeholder="Ej: Lun-Mié 08:00-09:30" 
+                           name="schedule" required [(ngModel)]="course.schedule">
                 </mat-form-field>
-                <mat-form-field>
-                    <input class="input-section" matInput placeholder="Days" name="days" required [(ngModel)]="course.days">
-                </mat-form-field>
-                <mat-form-field>
-                    <input class="input-section" matInput placeholder="Teacher" name="teacher" required [(ngModel)]="course.teacher">
-                </mat-form-field>
+
             </form>
         </div>
     </mat-dialog-content>
     <mat-dialog-actions>
-        <button class="button-cancel" mat-raised-button mat-dialog-close color="warn" (click)="onCancel()">Cancel</button>
-        <button class="button-save" mat-raised-button color="primary" (click)="onSubmit()">Save</button>
+        <button class="button-cancel" mat-raised-button mat-dialog-close color="warn" (click)="onCancel()">Cancelar</button>
+        <button class="button-save" mat-raised-button color="primary" (click)="onSubmit()">Guardar</button>
     </mat-dialog-actions>
 </div>

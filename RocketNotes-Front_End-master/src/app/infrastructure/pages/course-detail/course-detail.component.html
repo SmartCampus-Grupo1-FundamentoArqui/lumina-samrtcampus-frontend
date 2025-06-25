@@ -1,12 +1,8 @@
 <div *ngIf="course">
-    <h2>{{ course.course }}</h2>
-    <p>Teacher: {{ course.teacher }}</p>
-    <h1>{{ course.course }}</h1>
-    <p>Classroom: {{ course.room }}</p>
-    <p>Teacher: {{ course.teacher }}</p>
-    <p>Start time: {{ course.start_time }}</p>
-    <p>End time: {{ course.end_time }}</p>
-    <p>Days: {{ course.days }}</p>
-    <img [src]="course.image_url" alt="Course image">
-    <button mat-raised-button color="primary" (click)="goToDetailCoursesView()">Back to Courses</button>
+    <h2>{{ course.name }}</h2>
+    <p>ID del Profesor: {{ course.teacherId || 'Sin asignar' }}</p>
+    <h1>{{ course.name }}</h1>
+    <p>ID del Grado: {{ course.gradeId }}</p>
+    <p>Horario: {{ course.schedule }}</p>
+    <button mat-raised-button color="primary" (click)="goToDetailCoursesView()">Volver a Cursos</button>
 </div>

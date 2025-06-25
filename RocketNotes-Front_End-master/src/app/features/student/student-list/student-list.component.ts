@@ -1,15 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {DialogStudentComponent} from "../dialog-student/dialog-student.component";
-import {StudentsService} from "../service/students.service";
-export interface Student {
-  studentId: string;
-  name: string;
-  studentCode: string;
-  status: string;
-  paternal: string;
-  maternal: string;
-}
+import {StudentsService, Student} from "../service/students.service";
 @Component({
   selector: 'app-student-list',
   templateUrl: './student-list.component.html',
@@ -24,7 +16,7 @@ export class StudentListComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.apiStudent.get().subscribe({
+    this.apiStudent.getAll().subscribe({
       next:(response: any)=>{
         this.dataSource = response
         console.log(this.dataSource)
@@ -50,8 +42,10 @@ export class StudentListComponent implements OnInit {
       if(result.name!=null){
         let student1 ={
           name:result.name+" "+result.maternal+" "+result.paternal,
+          email: result.email || `${result.studentCode}@student.upc.edu.pe`,
           studentCode:result.studentCode,
-          enrollmentStatus: "Enrolled",
+          program: result.program || 'General',
+          semester: result.semester || 1
         }
         this.apiStudent.create(student1).subscribe({
               next:(response:any)=>{

@@ -3,6 +3,16 @@ import { MatDialog } from '@angular/material/dialog';
 import {AssistanceDialogComponent} from "./assistance-dialog.component";
 import { Router } from '@angular/router';
 
+interface AttendanceRecord {
+    date: string;
+    status: 'present' | 'absent';
+}
+
+interface StudentAttendance {
+    name: string;
+    attendance: AttendanceRecord[];
+}
+
 @Component({
     selector: 'app-root',
     templateUrl:'./classrooms-attendance.component.html',
@@ -32,19 +42,7 @@ export class ClassroomsAttendanceComponent implements OnInit  {
     }
 
 
-    students = [
-        { name:'EstudianteU202218475', attendance:[{date:'30.Ene.2024', status:'present'}, {date:'4.FEB.2024', status:'absent'}, ] },
-        { name:'EstudianteU202218475', attendance:[{date:'30.Ene.2024', status:'present'},  {date:'4.FEB.2024', status:'present'},] },
-        { name:'EstudianteU202218475', attendance:[{date:'30.Ene.2024', status:'present'}, {date:'4.FEB.2024', status:'present'},] },
-        { name:'EstudianteU202218475', attendance:[{date:'30.Ene.2024', status:'absent'},  {date:'4.FEB.2024', status:'present'},] },
-        { name:'EstudianteU202218475', attendance:[{date:'30.Ene.2024', status:'present'},  {date:'4.FEB.2024', status:'absent'},] },
-        { name:'EstudianteU202218475', attendance:[{date:'30.Ene.2024', status:'present'},  {date:'4.FEB.2024', status:'present'},] },
-        { name:'EstudianteU202218475', attendance:[{date:'30.Ene.2024', status:'present'},  {date:'4.FEB.2024', status:'present'},] },
-        { name:'EstudianteU202218475', attendance:[{date:'30.Ene.2024', status:'present'},  {date:'4.FEB.2024', status:'present'},] },
-        { name:'EstudianteU202218475', attendance:[{date:'30.Ene.2024', status:'present'},  {date:'4.FEB.2024', status:'absent'},] },
-        { name:'EstudianteU202218475', attendance:[{date:'30.Ene.2024', status:'present'},  {date:'4.FEB.2024', status:'present'},] },
-        { name:'EstudianteU202218475', attendance:[{date:'30.Ene.2024', status:'present'},  {date:'4.FEB.2024', status:'present'},] },
-    ];
+         students: StudentAttendance[] = [];
 
     openDialog(): void {
         const dialogRef = this.dialog.open(AssistanceDialogComponent);
@@ -61,7 +59,7 @@ export class ClassroomsAttendanceComponent implements OnInit  {
         });
     }
 
-    toggleAttendanceStatus(attendance: any): void {
+    toggleAttendanceStatus(attendance: AttendanceRecord): void {
         if (this.isAssistanceTaken) {
             attendance.status = attendance.status === 'present' ? 'absent' : 'present';
         }
@@ -79,7 +77,7 @@ export class ClassroomsAttendanceComponent implements OnInit  {
     deleteAssistance(date: string): void {
 
         this.students.forEach(student => {
-            student.attendance = student.attendance.filter(attendance => attendance.date !== date);
+            student.attendance = student.attendance.filter((attendance: AttendanceRecord) => attendance.date !== date);
         });
 
         localStorage.setItem('attendanceStudents', JSON.stringify(this.students));

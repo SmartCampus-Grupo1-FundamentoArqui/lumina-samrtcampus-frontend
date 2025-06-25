@@ -29,7 +29,7 @@ export class ListFacilitiesComponent implements OnInit {
 
   ngOnInit(): void {
     this.buttonStateService.setActiveButton('boton1');
-    this.apiService.get().subscribe({
+    this.apiService.getAll().subscribe({
       next:(response: any)=>{
         this.dataSource = response
         console.log(this.dataSource)
@@ -56,11 +56,10 @@ export class ListFacilitiesComponent implements OnInit {
       if(result.name!=null){
         let facilite1 ={
           name:result.name,
-          description:result.description,
-          budget:result.budget,
-          creation:result.creation,
-          period:result.period,
-          state: result.state
+          type: result.type || 'General',
+          capacity: result.capacity || 0,
+          status: result.state,
+          location: result.location || 'Campus'
         }
         this.apiService.create(facilite1).subscribe({
               next:(response:any)=>{

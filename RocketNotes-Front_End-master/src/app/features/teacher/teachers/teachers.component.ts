@@ -26,7 +26,7 @@ export class TeachersComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.apiTeacher.get().subscribe({
+    this.apiTeacher.getAll().subscribe({
       next:(response: any)=>{
         this.dataSource = response
         console.log(this.dataSource)

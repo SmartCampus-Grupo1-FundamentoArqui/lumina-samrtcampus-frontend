@@ -17,12 +17,12 @@ export class ClassroomCoursesComponent implements OnInit {
   constructor(private classroomService: ClassroomsService,private router: Router) {}
 
   ngOnInit() {
-    this.classroomService.get().subscribe({
+    this.classroomService.getAll().subscribe({
       next: (data: any  ) => {
 
         this.classrooms = data;
       },
-      error: (err) => console.error(err)
+      error: (err: any) => console.error(err)
     });
   }
 

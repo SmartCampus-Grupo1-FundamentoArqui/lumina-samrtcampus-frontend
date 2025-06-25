@@ -2,22 +2,14 @@
 
     <div fxFlex="95%">
 
-        <div class="container" fxLayout="row wrap" fxLayoutAlign="start start">
-            <mat-card class="example-card" fxFlex="20%" fxFlexOffset="1%">
-
-                <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
-
-                <mat-card-content>
-                    <mat-card-title>ClassroomA21 - G1A</mat-card-title>
-                    <mat-card-subtitle>20 students in this group</mat-card-subtitle>
-                </mat-card-content>
-                <mat-card-actions>
-                    <button mat-button color="primary" class="text-right" (click)="viewCourse()">view</button>
-                </mat-card-actions>
-            </mat-card>
-
-
-            <!-- Colocar mas por aqui -->
+        <div class="container" fxLayout="row wrap" fxLayoutAlign="center center" style="min-height: 300px;">
+            <div fxFlex="100%" style="text-align: center;">
+                <h2>No hay aulas disponibles</h2>
+                <p>Para ver aulas, primero necesitas crear algunas en la sección de <strong>Class Capacity</strong></p>
+                <button mat-raised-button color="primary" routerLink="/classroom-capacity">
+                    Ir a Class Capacity
+                </button>
+            </div>
         </div>
 
     </div>

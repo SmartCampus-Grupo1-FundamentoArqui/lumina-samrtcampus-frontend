@@ -1,6 +1,5 @@
 export const environmentDevelopment = {
     production: false,
-    serverBasePath: 'http://localhost:3000'
-
+    serverBasePath: 'http://localhost:8080'
 };
 

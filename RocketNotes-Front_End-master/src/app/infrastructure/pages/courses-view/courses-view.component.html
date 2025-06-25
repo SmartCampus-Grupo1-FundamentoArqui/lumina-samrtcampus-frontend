@@ -11,8 +11,8 @@
             <mat-card class="classroom-card">
                 <img mat-card-image src="https://images.pexels.com/photos/3573351/pexels-photo-3573351.png?auto=compress&cs=tinysrgb&fit=crop&h=150&w=400" alt="Photo of the classroom">
                 <mat-card-header>
-                    <mat-card-title>{{ course.course }}</mat-card-title>
-                    <mat-card-subtitle>{{ course.teacher }} students enrolled</mat-card-subtitle>
+                    <mat-card-title>{{ course.name }}</mat-card-title>
+                    <mat-card-subtitle>Grado ID: {{ course.gradeId }} - {{ course.schedule }}</mat-card-subtitle>
                 </mat-card-header>
                 <mat-card-actions>
                     <button mat-button color="primary" (click)="viewCourseDetails(course)">View</button>

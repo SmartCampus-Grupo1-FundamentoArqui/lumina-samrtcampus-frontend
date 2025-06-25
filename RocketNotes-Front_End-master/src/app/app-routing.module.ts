@@ -79,6 +79,11 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'academic-grades',
+    loadChildren: () => import('./features/academic-grades/academic-grades.module').then(m => m.AcademicGradesModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: '**',
     redirectTo: 'classrooms',
     pathMatch: 'full'

@@ -18,27 +18,21 @@ export class AuthInterceptor implements HttpInterceptor {
         private dialog: MatDialog) { }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        // Obtener el token del localStorage
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+        const token = currentUser.token;
 
-        const user = this.authService.getCurrentUser();
-
-        if (user && user.token) {
-
-            const cloned = req.clone({
-                headers: req.headers.set('Authorization',
-                    'Bearer ' + user.token)
-            });
-
-            return next.handle(cloned).pipe(tap(() => { }, (err: any) => {
-                if (err instanceof HttpErrorResponse) {
-                    if (err.status === 401) {
-                        this.dialog.closeAll();
-                        this.router.navigate(['/auth/login']);
-                    }
+        // Si hay token, agregar el header Authorization
+        if (token) {
+            const authReq = req.clone({
+                setHeaders: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
                 }
-            }));
-
-        } else {
-            return next.handle(req);
+            });
+            return next.handle(authReq);
         }
+
+        return next.handle(req);
     }
 }

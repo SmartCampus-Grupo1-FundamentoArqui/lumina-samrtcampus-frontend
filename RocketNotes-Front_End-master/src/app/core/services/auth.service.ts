@@ -1,41 +1,73 @@
 import { Injectable, Inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { delay, map } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { delay, map, catchError } from 'rxjs/operators';
 import * as jwt_decode from 'jwt-decode';
 import * as moment from 'moment';
 
 import { environment } from '../../../environments/environment';
-import { of, EMPTY } from 'rxjs';
+import { environmentDevelopment } from '../../../environments/environment.development';
+import { of, EMPTY, Observable, throwError } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthenticationService {
 
+    private apiUrl = `${environmentDevelopment.serverBasePath}/auth`;
+
     constructor(private http: HttpClient,
         @Inject('LOCALSTORAGE') private localStorage: Storage) {
     }
 
-    login(email: string, password: string) {
-        return of(true)
-            .pipe(delay(1000),
-                map((/*response*/) => {
-                    // set token property
-                    // const decodedToken = jwt_decode(response['token']);
+    login(usernameOrEmail: string, password: string): Observable<any> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        };
 
-                    // store email and jwt token in local storage to keep user logged in between page refreshes
+        // Determinar si es email o username
+        const isEmail = usernameOrEmail.includes('@');
+        const requestBody = isEmail ? 
+            { email: usernameOrEmail, password: password } :
+            { username: usernameOrEmail, password: password };
+
+        return this.http.post(`${this.apiUrl}/login`, requestBody, httpOptions).pipe(
+            map((response: any) => {
+                if (response && response.token) {
+                    // Decodificar el token JWT
+                    const decodedToken: any = jwt_decode.default(response.token);
+                    
+                    // Guardar en localStorage
                     this.localStorage.setItem('currentUser', JSON.stringify({
-                        token: 'aisdnaksjdn,axmnczm',
-                        isAdmin: true,
-                        email: 'john.doe@gmail.com',
-                        id: '12312323232',
-                        alias: 'john.doe@gmail.com'.split('@')[0],
-                        expiration: moment().add(1, 'days').toDate(),
-                        fullName: 'John Doe'
+                        token: response.token,
+                        isAdmin: true, // Puedes ajustar esto según tu lógica
+                        email: decodedToken.sub,
+                        id: decodedToken.sub,
+                        alias: decodedToken.sub,
+                        expiration: new Date(decodedToken.exp * 1000),
+                        fullName: decodedToken.sub
                     }));
 
                     return true;
-                }));
+                }
+                return false;
+            }),
+            catchError(error => {
+                console.error('Login error:', error);
+                return throwError(() => error);
+            })
+        );
+    }
+
+    register(userData: any): Observable<any> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        };
+
+        return this.http.post(`${this.apiUrl}/register`, userData, httpOptions);
     }
 
     logout(): void {
@@ -44,28 +76,45 @@ export class AuthenticationService {
     }
 
     getCurrentUser(): any {
-        // TODO: Enable after implementation
-        // return JSON.parse(this.localStorage.getItem('currentUser'));
-        return {
-            token: 'aisdnaksjdn,axmnczm',
-            isAdmin: true,
-            email: 'john.doe@gmail.com',
-            id: '12312323232',
-            alias: 'john.doe@gmail.com'.split('@')[0],
-            expiration: moment().add(1, 'days').toDate(),
-            fullName: 'John Doe'
+        return JSON.parse(this.localStorage.getItem('currentUser') || '{}');
+    }
+
+    passwordResetRequest(email: string): Observable<any> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            })
         };
+
+        return this.http.post(`${this.apiUrl}/password-reset-request`, { email }, httpOptions);
     }
 
-    passwordResetRequest(email: string) {
-        return of(true).pipe(delay(1000));
+    changePassword(email: string, currentPwd: string, newPwd: string): Observable<any> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        };
+
+        return this.http.post(`${this.apiUrl}/change-password`, {
+            email: email,
+            currentPassword: currentPwd,
+            newPassword: newPwd
+        }, httpOptions);
     }
 
-    changePassword(email: string, currentPwd: string, newPwd: string) {
-        return of(true).pipe(delay(1000));
-    }
+    passwordReset(email: string, token: string, password: string, confirmPassword: string): Observable<any> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        };
 
-    passwordReset(email: string, token: string, password: string, confirmPassword: string): any {
-        return of(true).pipe(delay(1000));
+        return this.http.post(`${this.apiUrl}/password-reset`, {
+            email: email,
+            token: token,
+            password: password,
+            confirmPassword: confirmPassword
+        }, httpOptions);
     }
 }

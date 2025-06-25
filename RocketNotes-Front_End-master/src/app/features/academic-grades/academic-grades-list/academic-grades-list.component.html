@@ -1,0 +1,71 @@
+<div class="container">
+  <div class="header">
+    <h1>Grados Académicos</h1>
+    <button mat-raised-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon>
+      Crear Grado
+    </button>
+  </div>
+
+  <div class="content" *ngIf="!isLoading; else loadingTemplate">
+    <mat-table [dataSource]="academicGrades" class="mat-elevation-z8">
+      
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef> Nombre </mat-header-cell>
+        <mat-cell *matCellDef="let grade"> {{grade.name}} </mat-cell>
+      </ng-container>
+
+      <!-- Level Column -->
+      <ng-container matColumnDef="level">
+        <mat-header-cell *matHeaderCellDef> Nivel </mat-header-cell>
+        <mat-cell *matCellDef="let grade"> {{grade.level}} </mat-cell>
+      </ng-container>
+
+      <!-- Section Column -->
+      <ng-container matColumnDef="section">
+        <mat-header-cell *matHeaderCellDef> Sección </mat-header-cell>
+        <mat-cell *matCellDef="let grade"> {{grade.section}} </mat-cell>
+      </ng-container>
+
+      <!-- Capacity Column -->
+      <ng-container matColumnDef="capacity">
+        <mat-header-cell *matHeaderCellDef> Capacidad </mat-header-cell>
+        <mat-cell *matCellDef="let grade"> {{grade.capacity}} </mat-cell>
+      </ng-container>
+
+      <!-- Current Size Column -->
+      <ng-container matColumnDef="currentSize">
+        <mat-header-cell *matHeaderCellDef> Estudiantes </mat-header-cell>
+        <mat-cell *matCellDef="let grade"> {{grade.currentSize || 0}} </mat-cell>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef> Acciones </mat-header-cell>
+        <mat-cell *matCellDef="let grade">
+          <button mat-icon-button color="primary" (click)="openEditDialog(grade)" matTooltip="Editar">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteAcademicGrade(grade)" matTooltip="Eliminar">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+    <div class="no-data" *ngIf="academicGrades.length === 0">
+      <p>No hay grados académicos registrados</p>
+    </div>
+  </div>
+
+  <ng-template #loadingTemplate>
+    <div class="loading">
+      <mat-spinner></mat-spinner>
+      <p>Cargando grados académicos...</p>
+    </div>
+  </ng-template>
+</div> 

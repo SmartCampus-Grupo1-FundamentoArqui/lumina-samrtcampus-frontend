@@ -37,9 +37,30 @@ export class RegisterComponent {
   register() {
     if (this.registerForm.valid) {
       this.loading = true;
-      //lógica para registrar al usuario
-      console.log('Registering user:', this.registerForm.value);
-      this.loading = false;
+      
+      const userData = {
+        email: this.registerForm.get('email')?.value,
+        username: this.registerForm.get('email')?.value.split('@')[0], // Usar parte antes del @ como username
+        fullname: this.registerForm.get('email')?.value.split('@')[0], // Por ahora usar el mismo valor
+        password: this.registerForm.get('password')?.value,
+        role: this.registerForm.get('userRole')?.value
+      };
+
+      console.log('Registering user:', userData);
+      
+      this.authService.register(userData).subscribe({
+        next: (response) => {
+          console.log('Registration successful:', response);
+          this.notificationService.openSnackBar('Registro exitoso. Ahora puedes iniciar sesión.');
+          this.router.navigate(['/auth/login']);
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Registration error:', error);
+          this.notificationService.openSnackBar('Error en el registro: ' + (error.error?.message || 'Error desconocido'));
+          this.loading = false;
+        }
+      });
     }
   }
 

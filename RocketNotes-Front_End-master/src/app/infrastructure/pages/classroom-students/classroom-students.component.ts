@@ -15,12 +15,12 @@ export class ClassroomStudentsComponent implements OnInit {
   constructor(private studentService: StudentsService) {}
 
   ngOnInit() {
-    this.studentService.get().subscribe({
+    this.studentService.getAll().subscribe({
       next: (data:any) => {
 
         this.dataSource = data;
       },
-      error: (err) => console.error(err)
+      error: (err: any) => console.error(err)
     });
   }
 
