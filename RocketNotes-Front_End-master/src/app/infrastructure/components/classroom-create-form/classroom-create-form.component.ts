@@ -1,103 +1,124 @@
-import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
-import {Student} from "../../model/student.entity";
-import {NgForm} from "@angular/forms";
-import {Classroom as ClassroomEntity} from "../../model/classroom.entity";
-import {ClassroomsService, Classroom} from "../../services/classrooms.service";
-import {MatDialogRef} from "@angular/material/dialog";
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ClassroomsService, ClassroomRequest } from '../../services/classrooms.service';
+import { AcademicGradesService, AcademicGrade } from '../../../core/services/academic-grades.service';
+import { Classroom } from '../../model/classroom.entity';
 
 @Component({
   selector: 'app-classroom-create-form',
   templateUrl: './classroom-create-form.component.html',
-
   styleUrls: ['./classroom-create-form.component.css']
-
 })
-
-export class ClassroomCreateFormComponent {
-  @Input() classroom: ClassroomEntity;
+export class ClassroomCreateFormComponent implements OnInit {
+  @Input() classroom?: Classroom;
   @Input() editMode = false;
-  @Output() studentAdded = new EventEmitter<Classroom>();
-  @Output() studentUpdated = new EventEmitter<Classroom>();
-  @Output() editCanceled = new EventEmitter();
-  @ViewChild('studentForm', { static: false}) studentForm!: NgForm;
+  @Output() classroomAdded = new EventEmitter<Classroom>();
+  @Output() classroomUpdated = new EventEmitter<Classroom>();
+  @Output() editCanceled = new EventEmitter<void>();
+  @ViewChild('classroomForm', { static: false }) formDirective!: NgForm;
 
-  // Methods
+  classroomForm: FormGroup;
+  grades: AcademicGrade[] = [];
+  isLoading = false;
 
   constructor(
+    private formBuilder: FormBuilder,
+    private dialogRef: MatDialogRef<ClassroomCreateFormComponent>,
     private classroomsService: ClassroomsService,
-    private dialogRef: MatDialogRef<ClassroomCreateFormComponent>
+    private academicGradesService: AcademicGradesService,
+    private snackBar: MatSnackBar
   ) {
-    this.classroom = {} as ClassroomEntity;
+    this.classroomForm = this.formBuilder.group({
+      section: ['', [Validators.required]],
+      roomNumber: ['', [Validators.required]],
+      capacity: ['', [Validators.required, Validators.min(1)]],
+      gradeId: ['', [Validators.required]]
+    });
   }
 
-  // Private Methods
-
-  private resetEditState() {
-    this.editMode = false;
-    this.studentForm.resetForm();
-    this.classroom = {} as ClassroomEntity;
-  }
-
-  // Event Handlers
-
-  onSubmit() {
-    if (this.studentForm.form.valid) {
-      if (this.editMode) {
-        this.updateClassroom();
-      } else {
-        this.createClassroom();
-      }
-    } else {
-      console.log('invalid data');
+  ngOnInit(): void {
+    this.loadGrades();
+    if (this.editMode && this.classroom) {
+      this.classroomForm.patchValue({
+        section: this.classroom.section,
+        roomNumber: this.classroom.classroom,
+        capacity: this.classroom.capacity
+      });
     }
   }
 
-  private createClassroom() {
-    const newClassroom = {
-      name: this.classroom.classroom,
-      capacity: this.classroom.capacity,
-      type: 'Aula',
-      location: 'Campus'
-    };
-
-    this.classroomsService.create(newClassroom).subscribe({
-      next: (response) => {
-        console.log('Aula creada exitosamente:', response);
-        this.studentAdded.emit(response);
-        this.dialogRef.close(response);
+  loadGrades() {
+    this.academicGradesService.getAll().subscribe({
+      next: (grades) => {
+        this.grades = grades;
       },
-      error: (error) => {
-        console.error('Error creando aula:', error);
+      error: (error: Error) => {
+        console.error('Error loading grades:', error);
+        this.snackBar.open('Error loading grades', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom'
+        });
       }
     });
   }
 
-  private updateClassroom() {
-    if (this.classroom.id) {
-      const updatedClassroom = {
-        name: this.classroom.classroom,
-        capacity: this.classroom.capacity,
-        type: 'Aula',
-        location: 'Campus'
+  onSubmit() {
+    if (this.classroomForm.valid) {
+      this.isLoading = true;
+      const classroomRequest: ClassroomRequest = {
+        section: this.classroomForm.get('section')?.value,
+        roomNumber: this.classroomForm.get('roomNumber')?.value,
+        capacity: Number(this.classroomForm.get('capacity')?.value),
+        gradeId: Number(this.classroomForm.get('gradeId')?.value)
       };
-      
-      this.classroomsService.update(this.classroom.id.toString(), updatedClassroom).subscribe({
-        next: (response) => {
-          console.log('Aula actualizada exitosamente:', response);
-          this.studentUpdated.emit(response);
-          this.dialogRef.close(response);
+
+      const request$ = this.editMode && this.classroom 
+        ? this.classroomsService.update(String(this.classroom.id), classroomRequest)
+        : this.classroomsService.create(classroomRequest);
+
+      request$.subscribe({
+        next: (classroom: Classroom) => {
+          this.snackBar.open(
+            this.editMode ? 'Classroom updated successfully' : 'Classroom created successfully', 
+            'Close',
+            {
+              duration: 3000,
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom'
+            }
+          );
+          if (this.editMode) {
+            this.classroomUpdated.emit(classroom);
+          } else {
+            this.classroomAdded.emit(classroom);
+          }
+          this.dialogRef.close(classroom);
         },
-        error: (error) => {
-          console.error('Error actualizando aula:', error);
+        error: (error: Error) => {
+          console.error('Error with classroom:', error);
+          this.snackBar.open(
+            `Error ${this.editMode ? 'updating' : 'creating'} classroom`, 
+            'Close',
+            {
+              duration: 3000,
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom'
+            }
+          );
+        },
+        complete: () => {
+          this.isLoading = false;
         }
       });
     }
   }
 
   onCancel() {
-    this.resetEditState();
     this.editCanceled.emit();
+    this.dialogRef.close();
   }
-
 }
 

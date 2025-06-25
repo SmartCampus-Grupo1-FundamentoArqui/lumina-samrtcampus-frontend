@@ -1,39 +1,142 @@
-<h1 mat-dialog-title>Hi </h1>
+<h1 mat-dialog-title>{{ currentStep === 1 ? 'Student Information' : 'Parent Information' }}</h1>
+
 <div mat-dialog-content>
-    <ul>
-        <li>
-            <p>Name</p>
-            <mat-form-field>
-                <input matInput [(ngModel)]="data.name">
-            </mat-form-field>
-        </li>
-        <li>
-            <p>Maternal Last Name</p>
-            <mat-form-field>
-                <input matInput [(ngModel)]="data.paternal">
-            </mat-form-field>
-        </li>
-    </ul>
-    <ul>
-        <li>
-            <p> Paternal Last Name</p>
-            <mat-form-field>
-                <input matInput [(ngModel)]="data.maternal">
-            </mat-form-field>
-        </li>
-        <li>
-            <p>Student Code</p>
-            <mat-form-field>
-                <input matInput [(ngModel)]="data.studentCode">
-            </mat-form-field>
-        </li>
-    </ul>
+  <!-- Step 1: Student Information -->
+  <form [formGroup]="studentForm" *ngIf="currentStep === 1">
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Classroom</mat-label>
+        <mat-select formControlName="classroom_id" required>
+          <mat-option *ngFor="let classroom of classrooms" [value]="classroom.id">
+            Section {{ classroom.section }} ({{ classroom.classroom }}) - Capacity: {{ classroom.capacity }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="studentForm.get('classroom_id')?.hasError('required')">
+          Please select a classroom
+        </mat-error>
+      </mat-form-field>
+    </div>
 
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>DNI</mat-label>
+        <input matInput formControlName="dni" required>
+        <mat-error *ngIf="studentForm.get('dni')?.hasError('required')">
+          DNI is required
+        </mat-error>
+        <mat-error *ngIf="studentForm.get('dni')?.hasError('minlength') || studentForm.get('dni')?.hasError('maxlength')">
+          DNI must be 8 characters
+        </mat-error>
+      </mat-form-field>
+    </div>
 
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="first_name" required>
+        <mat-error *ngIf="studentForm.get('first_name')?.hasError('required')">
+          First name is required
+        </mat-error>
+      </mat-form-field>
+    </div>
 
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Father's Last Name</mat-label>
+        <input matInput formControlName="last_name_father" required>
+        <mat-error *ngIf="studentForm.get('last_name_father')?.hasError('required')">
+          Father's last name is required
+        </mat-error>
+      </mat-form-field>
+    </div>
 
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Mother's Last Name</mat-label>
+        <input matInput formControlName="last_name_mother" required>
+        <mat-error *ngIf="studentForm.get('last_name_mother')?.hasError('required')">
+          Mother's last name is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+
+  <!-- Step 2: Parent Information -->
+  <form [formGroup]="parentForm" *ngIf="currentStep === 2">
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Parent's DNI</mat-label>
+        <input matInput formControlName="dni" required>
+        <mat-error *ngIf="parentForm.get('dni')?.hasError('required')">
+          DNI is required
+        </mat-error>
+        <mat-error *ngIf="parentForm.get('dni')?.hasError('minlength') || parentForm.get('dni')?.hasError('maxlength')">
+          DNI must be 8 characters
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" required type="email">
+        <mat-error *ngIf="parentForm.get('email')?.hasError('required')">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="parentForm.get('email')?.hasError('email')">
+          Please enter a valid email
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="first_name" required>
+        <mat-error *ngIf="parentForm.get('first_name')?.hasError('required')">
+          First name is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Father's Last Name</mat-label>
+        <input matInput formControlName="last_name_father" required>
+        <mat-error *ngIf="parentForm.get('last_name_father')?.hasError('required')">
+          Father's last name is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Mother's Last Name</mat-label>
+        <input matInput formControlName="last_name_mother" required>
+        <mat-error *ngIf="parentForm.get('last_name_mother')?.hasError('required')">
+          Mother's last name is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Phone</mat-label>
+        <input matInput formControlName="phone" required>
+        <mat-error *ngIf="parentForm.get('phone')?.hasError('required')">
+          Phone is required
+        </mat-error>
+        <mat-error *ngIf="parentForm.get('phone')?.hasError('pattern')">
+          Phone must be 9 digits
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </form>
 </div>
-<div mat-dialog-actions class="actions">
-    <button mat-button (click)="onNoClick()">Cancel</button>
-    <button mat-button [mat-dialog-close]="data" >Add</button>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button (click)="previousStep()" *ngIf="currentStep === 2">Back</button>
+  <button mat-raised-button color="primary" (click)="nextStep()" *ngIf="currentStep === 1" [disabled]="!studentForm.valid">Continue</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" *ngIf="currentStep === 2" [disabled]="!parentForm.valid">Save</button>
 </div>

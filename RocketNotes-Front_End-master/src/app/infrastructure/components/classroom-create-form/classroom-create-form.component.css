@@ -18,8 +18,8 @@
 
 .form-row {
   display: flex;
-  flex-direction: column;
-
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .input-section{
@@ -32,4 +32,28 @@
 .footer-section {
   display: flex;
 
+}
+
+.classroom-form {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 16px;
+}
+
+mat-form-field {
+  flex: 1;
+}
+
+mat-card-actions {
+  padding: 16px;
+  gap: 8px;
+}
+
+button {
+  min-width: 120px;
+}
+
+mat-spinner {
+  display: inline-block;
+  margin-right: 8px;
 }
