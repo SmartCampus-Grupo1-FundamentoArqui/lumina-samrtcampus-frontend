@@ -63,10 +63,14 @@ export class AuthenticationService {
     register(userData: any): Observable<any> {
         const httpOptions = {
             headers: new HttpHeaders({
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             })
         };
 
+        console.log('Registration URL:', `${this.apiUrl}/register`);
+        console.log('Registration data:', userData);
+        
         return this.http.post(`${this.apiUrl}/register`, userData, httpOptions);
     }
 
