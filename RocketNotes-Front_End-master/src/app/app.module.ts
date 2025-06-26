@@ -1,4 +1,3 @@
-
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import {HttpClientModule} from "@angular/common/http";
@@ -31,6 +30,7 @@ import { CourseCreateFormComponent } from './infrastructure/components/course-cr
 import { RegisterComponent } from './features/auth/register/register.component';
 import {MatRadioModule} from "@angular/material/radio";
 import { CourseDetailComponent } from './infrastructure/pages/course-detail/course-detail.component';
+import { FacilitieModule } from './features/facilitie/facilitie.module';
 
 
 @NgModule({
@@ -71,7 +71,8 @@ import { CourseDetailComponent } from './infrastructure/pages/course-detail/cour
       level: environment.logLevel,
       serverLogLevel: environment.serverLogLevel
     }),
-    MatRadioModule
+    MatRadioModule,
+    FacilitieModule
   ],
   bootstrap: [AppComponent]
 })

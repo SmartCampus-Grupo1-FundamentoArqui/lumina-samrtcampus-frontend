@@ -77,11 +77,49 @@ export class DialogStudentComponent implements OnInit {
 
   onSubmit(): void {
     if (this.studentForm.valid && this.parentForm.valid) {
-      const result: StudentRegistration = {
-        student: this.studentForm.value,
-        parent: this.parentForm.value
+      // Crear objeto estudiante con todos los campos requeridos
+      const student = {
+        classroom_id: this.studentForm.get('classroom_id')?.value,
+        dni: this.studentForm.get('dni')?.value,
+        first_name: this.studentForm.get('first_name')?.value,
+        last_name_father: this.studentForm.get('last_name_father')?.value,
+        last_name_mother: this.studentForm.get('last_name_mother')?.value
       };
-      this.dialogRef.close(result);
+
+      // Crear objeto padre con todos los campos requeridos
+      const parent = {
+        dni: this.parentForm.get('dni')?.value,
+        email: this.parentForm.get('email')?.value,
+        first_name: this.parentForm.get('first_name')?.value,
+        last_name_father: this.parentForm.get('last_name_father')?.value,
+        last_name_mother: this.parentForm.get('last_name_mother')?.value,
+        phone: this.parentForm.get('phone')?.value
+      };
+
+      // Validar que ningún campo sea null antes de cerrar el diálogo
+      if (Object.values(student).some(value => value === null) || 
+          Object.values(parent).some(value => value === null)) {
+        console.error('Algunos campos son nulos:', { student, parent });
+        return;
+      }
+
+      this.dialogRef.close({
+        student,
+        parent
+      });
+    } else {
+      // Marcar todos los campos como touched para mostrar los errores
+      if (this.currentStep === 1) {
+        Object.keys(this.studentForm.controls).forEach(key => {
+          const control = this.studentForm.get(key);
+          control?.markAsTouched();
+        });
+      } else {
+        Object.keys(this.parentForm.controls).forEach(key => {
+          const control = this.parentForm.get(key);
+          control?.markAsTouched();
+        });
+      }
     }
   }
 

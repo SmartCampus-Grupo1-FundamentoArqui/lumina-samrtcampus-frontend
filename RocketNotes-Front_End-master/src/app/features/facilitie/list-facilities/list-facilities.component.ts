@@ -1,18 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import {ButtonStateService} from "../../maintenance/ButtonStateService";
-import {FacilitieService} from "../service/facilitie.service";
-import {DialogFacilitieComponent} from "../dialog-facilitie/dialog-facilitie.component";
-import {MatDialog} from "@angular/material/dialog";
-
-
-export interface Facilitie {
-  name: string;
-  description: string;
-  budget: string;
-  creation: string;
-  period: string;
-  state: string;
-}
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTable } from '@angular/material/table';
+import { FacilitieService, Facility } from '../service/facilitie.service';
+import { FacilitieDialogComponent } from '../facilitie-dialog/facilitie-dialog.component';
 
 @Component({
   selector: 'app-list-facilities',
@@ -20,58 +11,100 @@ export interface Facilitie {
   styleUrls: ['./list-facilities.component.css']
 })
 export class ListFacilitiesComponent implements OnInit {
-  displayedColumns: string[] = ['id','name','description','budget','creation','period','state']
+  @ViewChild(MatTable) table!: MatTable<any>;
+  
+  displayedColumns: string[] = [
+    'id',
+    'name',
+    'description',
+    'budget',
+    'creation',
+    'finalization',
+    'period',
+    'state',
+    'actions'
+  ];
+  
+  dataSource: Facility[] = [];
 
-  dataSource: Facilitie[] = [];
-  facilitie: any={}
-  constructor(private buttonStateService: ButtonStateService, private apiService: FacilitieService,public dialog: MatDialog) { }
-
+  constructor(
+    private dialog: MatDialog,
+    private facilitieService: FacilitieService,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
-    this.buttonStateService.setActiveButton('boton1');
-    this.apiService.getAll().subscribe({
-      next:(response: any)=>{
-        this.dataSource = response
-        console.log(this.dataSource)
-      }
-    })
+    this.loadFacilities();
   }
-  onEditItem(object: any){
 
-  }
-  openDialog(){
-    const dialogRef= this.dialog.open(DialogFacilitieComponent,{
-      width: '600px',
-      data:{
-        name:this.facilitie.name,
-        description: this.facilitie.description,
-        budget: this.facilitie.budget,
-        creation: this.facilitie.creation,
-        period: this.facilitie.period,
-        state : this.facilitie.state
-
+  loadFacilities(): void {
+    this.facilitieService.getAll().subscribe({
+      next: (facilities) => {
+        this.dataSource = facilities;
+        if (this.table) {
+          this.table.renderRows();
+        }
+      },
+      error: (error) => {
+        console.error('Error loading facilities:', error);
+        this.snackBar.open('Error loading facilities', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top'
+        });
       }
     });
-    dialogRef.afterClosed().subscribe(result=>{
-      if(result.name!=null){
-        let facilite1 ={
-          name:result.name,
-          type: result.type || 'General',
-          capacity: result.capacity || 0,
-          status: result.state,
-          location: result.location || 'Campus'
-        }
-        this.apiService.create(facilite1).subscribe({
-              next:(response:any)=>{
-                console.log(response);
-              }
-            }
-        )
-
-      }
-
-    })
   }
 
+  openDialog(): void {
+    const dialogRef = this.dialog.open(FacilitieDialogComponent, {
+      width: '400px'
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.facilitieService.create(result).subscribe({
+          next: () => {
+            this.loadFacilities();
+            this.snackBar.open('Facility created successfully', 'Close', {
+              duration: 3000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top'
+            });
+          },
+          error: (error) => {
+            console.error('Error creating facility:', error);
+            this.snackBar.open('Error creating facility', 'Close', {
+              duration: 3000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top'
+            });
+          }
+        });
+      }
+    });
+  }
+
+  deleteFacility(id: number): void {
+    if (confirm('Are you sure you want to delete this facility?')) {
+      this.facilitieService.delete(id).subscribe({
+        next: () => {
+          this.loadFacilities();
+          this.snackBar.open('Facility deleted successfully', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top'
+          });
+        },
+        error: (error) => {
+          console.error('Error deleting facility:', error);
+          this.snackBar.open('Error deleting facility', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top'
+          });
+        }
+      });
+    }
+  }
 }

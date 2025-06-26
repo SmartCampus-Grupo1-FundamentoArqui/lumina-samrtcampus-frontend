@@ -1,49 +1,24 @@
-<h1 mat-dialog-title>Hi </h1>
+<h1 mat-dialog-title>Agregar Equipo</h1>
 <div mat-dialog-content>
-    <ul>
-        <li>
-            <p>Name</p>
-            <mat-form-field>
-                <input matInput [(ngModel)]="data.name">
-            </mat-form-field>
-        </li>
-        <li>
-            <p>Quantity</p>
-            <mat-form-field>
-                <input matInput [(ngModel)]="data.quantity">
-            </mat-form-field>
-        </li>
-        <li>
-            <p>State</p>
-            <mat-form-field>
-                <input matInput [(ngModel)]="data.state">
-            </mat-form-field>
-        </li>
-    </ul>
-    <ul>
-        <li>
-            <p> Budget</p>
-            <mat-form-field>
-                <input matInput [(ngModel)]="data.budget">
-            </mat-form-field>
-        </li>
-        <li>
-            <p>Creation</p>
-            <mat-form-field>
-                <input matInput [(ngModel)]="data.creation">
-            </mat-form-field>
-        </li>
-        <li>
-            <p>Period</p>
-            <mat-form-field>
-                <input matInput [(ngModel)]="data.period">
-            </mat-form-field>
-        </li>
-    </ul>
+    <mat-form-field class="full-width">
+        <mat-label>Nombre</mat-label>
+        <input matInput [(ngModel)]="data.name" required>
+    </mat-form-field>
 
+    <mat-form-field class="full-width">
+        <mat-label>Cantidad</mat-label>
+        <input matInput type="number" [(ngModel)]="data.quantity" required>
+    </mat-form-field>
 
+    <mat-form-field class="full-width">
+        <mat-label>Presupuesto</mat-label>
+        <input matInput type="number" [(ngModel)]="data.budget" required>
+    </mat-form-field>
 
-
+    <mat-form-field class="full-width">
+        <mat-label>Periodo (meses)</mat-label>
+        <input matInput type="number" [(ngModel)]="data.period" required>
+    </mat-form-field>
 </div>
 <div mat-dialog-actions class="actions">
     <button mat-button (click)="onNoClick()">Cancel</button>

@@ -4,12 +4,22 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environmentDevelopment } from "../../../../environments/environment.development";
 
-export interface Equipment {
-  id?: string;
+export interface CreateEquipmentDto {
   name: string;
-  type: string;
-  status?: string;
-  location?: string;
+  quantity: number;
+  budget: number;
+  period: number;
+}
+
+export interface Equipment {
+  id: number;
+  name: string;
+  quantity: number;
+  budget: number;
+  creation: string;
+  finalization: string;
+  period: number;
+  state: string;
 }
 
 @Injectable({
@@ -17,7 +27,7 @@ export interface Equipment {
 })
 export class EquipmentService {
 
-  private apiUrl = `${environmentDevelopment.serverBasePath}/maintenances/equipment`;
+  private apiUrl = `${environmentDevelopment.serverBasePath}/equipments`;
 
   constructor(private http: HttpClient) {}
 
@@ -47,7 +57,7 @@ export class EquipmentService {
     );
   }
 
-  create(equipment: Equipment): Observable<Equipment> {
+  create(equipment: CreateEquipmentDto): Observable<Equipment> {
     return this.http.post<Equipment>(this.apiUrl, equipment, { headers: this.getAuthHeaders() }).pipe(
       catchError(error => {
         console.error('Error creating equipment:', error);
