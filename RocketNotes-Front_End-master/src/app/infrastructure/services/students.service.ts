@@ -1,16 +1,43 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { environmentDevelopment } from "../../../environments/environment.development";
 
 export interface Student {
-  id?: string;
-  name: string;
+  id?: number;
+  firstName: string;
+  lastNameFather: string;
+  lastNameMother: string;
+  dni: string;
+  classroomId?: number;
+  parent?: Parent;
+}
+
+export interface Parent {
+  firstName: string;
+  lastNameFather: string;
+  lastNameMother: string;
+  dni: string;
+  phone: string;
   email: string;
-  studentCode?: string;
-  program?: string;
-  semester?: number;
+}
+
+export interface StudentRequest {
+  firstName: string;
+  lastNameFather: string;
+  lastNameMother: string;
+  dni: string;
+  parent: ParentRequest;
+}
+
+export interface ParentRequest {
+  firstName: string;
+  lastNameFather: string;
+  lastNameMother: string;
+  dni: string;
+  phone: string;
+  email: string;
 }
 
 @Injectable({
@@ -48,8 +75,17 @@ export class StudentsService {
     );
   }
 
-  create(student: Student): Observable<Student> {
-    return this.http.post<Student>(this.apiUrl, student, { headers: this.getAuthHeaders() }).pipe(
+  create(request: StudentRequest): Observable<Student> {
+    console.log('Sending student data to backend:', {
+      request,
+      url: this.apiUrl,
+      headers: this.getAuthHeaders()
+    });
+    return this.http.post<Student>(this.apiUrl, request, { headers: this.getAuthHeaders() }).pipe(
+      map(response => {
+        console.log('Student created successfully:', response);
+        return response;
+      }),
       catchError(error => {
         console.error('Error creating student:', error);
         return throwError(() => error);
@@ -70,6 +106,19 @@ export class StudentsService {
     return this.http.delete<any>(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() }).pipe(
       catchError(error => {
         console.error('Error deleting student:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  assignClassroom(studentId: number, classroomId: number): Observable<Student> {
+    return this.http.put<Student>(
+      `${this.apiUrl}/${studentId}/assign-classroom`, 
+      { classroomId }, 
+      { headers: this.getAuthHeaders() }
+    ).pipe(
+      catchError(error => {
+        console.error('Error assigning classroom to student:', error);
         return throwError(() => error);
       })
     );
