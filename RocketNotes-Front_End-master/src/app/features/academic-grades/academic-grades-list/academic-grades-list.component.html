@@ -22,34 +22,27 @@
         <mat-cell *matCellDef="let grade"> {{grade.level}} </mat-cell>
       </ng-container>
 
-      <!-- Section Column -->
-      <ng-container matColumnDef="section">
-        <mat-header-cell *matHeaderCellDef> Sección </mat-header-cell>
-        <mat-cell *matCellDef="let grade"> {{grade.section}} </mat-cell>
-      </ng-container>
-
-      <!-- Capacity Column -->
-      <ng-container matColumnDef="capacity">
-        <mat-header-cell *matHeaderCellDef> Capacidad </mat-header-cell>
-        <mat-cell *matCellDef="let grade"> {{grade.capacity}} </mat-cell>
-      </ng-container>
-
-      <!-- Current Size Column -->
-      <ng-container matColumnDef="currentSize">
-        <mat-header-cell *matHeaderCellDef> Estudiantes </mat-header-cell>
-        <mat-cell *matCellDef="let grade"> {{grade.currentSize || 0}} </mat-cell>
-      </ng-container>
-
       <!-- Actions Column -->
       <ng-container matColumnDef="actions">
         <mat-header-cell *matHeaderCellDef> Acciones </mat-header-cell>
         <mat-cell *matCellDef="let grade">
-          <button mat-icon-button color="primary" (click)="openEditDialog(grade)" matTooltip="Editar">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button color="warn" (click)="deleteAcademicGrade(grade)" matTooltip="Eliminar">
-            <mat-icon>delete</mat-icon>
-          </button>
+          <div class="action-buttons">
+            <button mat-mini-fab 
+                    color="primary" 
+                    class="edit-button" 
+                    (click)="openEditDialog(grade)" 
+                    matTooltip="Editar"
+                    style="margin-right: 8px;">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-mini-fab 
+                    color="warn" 
+                    class="delete-button" 
+                    (click)="deleteAcademicGrade(grade)" 
+                    matTooltip="Eliminar">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
         </mat-cell>
       </ng-container>
 

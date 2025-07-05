@@ -14,7 +14,7 @@
                     <mat-label>Grado Académico</mat-label>
                     <mat-select name="gradeId" required [(ngModel)]="course.gradeId">
                         <mat-option *ngFor="let grade of academicGrades" [value]="grade.id">
-                            {{grade.name}} - {{grade.level}} (Sección {{grade.section}})
+                            {{grade.name}} - {{grade.level}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>

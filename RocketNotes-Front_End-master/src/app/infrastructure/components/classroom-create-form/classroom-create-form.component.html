@@ -40,7 +40,7 @@
           <mat-label>Grade</mat-label>
           <mat-select formControlName="gradeId">
             <mat-option *ngFor="let grade of grades" [value]="grade.id">
-              {{grade.level}} - {{grade.name}} ({{grade.section}})
+              {{grade.level}} - {{grade.name}}
             </mat-option>
           </mat-select>
           <mat-hint>Select the academic grade</mat-hint>

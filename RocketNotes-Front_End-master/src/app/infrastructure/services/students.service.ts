@@ -28,6 +28,7 @@ export interface StudentRequest {
   lastNameFather: string;
   lastNameMother: string;
   dni: string;
+  classroomId: number;
   parent: ParentRequest;
 }
 

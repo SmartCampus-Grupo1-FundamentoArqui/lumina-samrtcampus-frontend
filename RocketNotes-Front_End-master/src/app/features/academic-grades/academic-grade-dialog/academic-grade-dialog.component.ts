@@ -19,17 +19,9 @@ export class AcademicGradeDialogComponent implements OnInit {
   isEdit: boolean;
 
   levelOptions = [
-    { value: 'Inicial', label: 'Inicial' },
-    { value: 'Primaria', label: 'Primaria' },
-    { value: 'Secundaria', label: 'Secundaria' }
-  ];
-
-  sectionOptions = [
-    { value: 'A', label: 'A' },
-    { value: 'B', label: 'B' },
-    { value: 'C', label: 'C' },
-    { value: 'D', label: 'D' },
-    { value: 'E', label: 'E' }
+    { value: 'Primary', label: 'Primaria' },
+    { value: 'Secondary', label: 'Secundaria' },
+    { value: 'Initial', label: 'Inicial' }
   ];
 
   constructor(
@@ -50,9 +42,7 @@ export class AcademicGradeDialogComponent implements OnInit {
   createForm(): FormGroup {
     return this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
-      level: ['', Validators.required],
-      section: ['', Validators.required],
-      capacity: [30, [Validators.required, Validators.min(1), Validators.max(50)]]
+      level: ['', Validators.required]
     });
   }
 
@@ -61,9 +51,7 @@ export class AcademicGradeDialogComponent implements OnInit {
       const formValue = this.gradeForm.value;
       const gradeData: AcademicGrade = {
         name: formValue.name,
-        level: formValue.level,
-        section: formValue.section,
-        capacity: formValue.capacity
+        level: formValue.level
       };
 
       if (this.isEdit && this.data.grade?.id) {
@@ -87,14 +75,6 @@ export class AcademicGradeDialogComponent implements OnInit {
     
     if (control?.hasError('minlength')) {
       return 'Mínimo 2 caracteres';
-    }
-    
-    if (control?.hasError('min')) {
-      return 'El valor mínimo es 1';
-    }
-    
-    if (control?.hasError('max')) {
-      return 'El valor máximo es 50';
     }
     
     return '';

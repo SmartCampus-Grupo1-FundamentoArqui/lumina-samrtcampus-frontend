@@ -51,14 +51,15 @@ export class StudentListComponent implements OnInit {
         console.log('Dialog result:', result);
         
         const studentRequest: StudentRequest = {
-          firstName: result.student.first_name,
-          lastNameFather: result.student.last_name_father,
-          lastNameMother: result.student.last_name_mother,
+          firstName: result.student.firstName,
+          lastNameFather: result.student.lastNameFather,
+          lastNameMother: result.student.lastNameMother,
           dni: result.student.dni,
+          classroomId: result.student.classroomId,
           parent: {
-            firstName: result.parent.first_name,
-            lastNameFather: result.parent.last_name_father,
-            lastNameMother: result.parent.last_name_mother,
+            firstName: result.parent.firstName,
+            lastNameFather: result.parent.lastNameFather,
+            lastNameMother: result.parent.lastNameMother,
             dni: result.parent.dni,
             phone: result.parent.phone,
             email: result.parent.email

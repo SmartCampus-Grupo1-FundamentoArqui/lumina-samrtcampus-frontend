@@ -23,10 +23,10 @@ export class RegisterComponent {
   private titleService: Title,
   private router: Router) {
     this.registerForm = this.fb.group({
+      fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]],
-      userRole: ['', Validators.required]
+      confirmPassword: ['', [Validators.required]]
     }, { validator: this.passwordMatchValidator });
   }
 
@@ -39,11 +39,9 @@ export class RegisterComponent {
       this.loading = true;
       
       const userData = {
+        fullName: this.registerForm.get('fullName')?.value,
         email: this.registerForm.get('email')?.value,
-        username: this.registerForm.get('email')?.value.split('@')[0], // Usar parte antes del @ como username
-        fullname: this.registerForm.get('email')?.value.split('@')[0], // Por ahora usar el mismo valor
-        password: this.registerForm.get('password')?.value,
-        role: this.registerForm.get('userRole')?.value
+        password: this.registerForm.get('password')?.value
       };
 
       console.log('Registering user:', userData);

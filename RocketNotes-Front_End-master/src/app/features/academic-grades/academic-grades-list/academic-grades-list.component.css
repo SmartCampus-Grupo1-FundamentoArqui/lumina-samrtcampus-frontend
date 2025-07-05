@@ -24,15 +24,36 @@
 
 .mat-table {
   width: 100%;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .mat-header-cell {
   font-weight: 600;
   color: #333;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
 }
 
 .mat-cell {
-  padding: 12px 8px;
+  padding: 16px 12px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.mat-row:hover {
+  background-color: #f8f9fa;
+  transition: background-color 0.3s ease;
+}
+
+/* Estilos específicos para cada columna */
+.mat-column-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.mat-column-level {
+  color: #666;
 }
 
 .no-data {
@@ -56,6 +77,75 @@
 
 button[mat-icon-button] {
   margin: 0 4px;
+  transition: all 0.3s ease;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline-flex !important;
+}
+
+button[mat-icon-button]:hover {
+  transform: scale(1.1);
+}
+
+/* Forzar visibilidad de los iconos */
+.mat-icon {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline-block !important;
+}
+
+/* Estilos específicos para la columna de acciones */
+.mat-column-actions {
+  width: 140px;
+  min-width: 140px;
+  text-align: center;
+  padding: 0 16px !important;
+}
+
+.mat-column-actions .mat-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 12px !important;
+}
+
+.mat-column-actions .mat-header-cell {
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+/* Contenedor de botones de acción */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Estilos para los mini-fab buttons */
+.edit-button {
+  transform: scale(0.8);
+  transition: transform 0.3s ease;
+}
+
+.delete-button {
+  transform: scale(0.8);
+  transition: transform 0.3s ease;
+}
+
+.edit-button:hover,
+.delete-button:hover {
+  transform: scale(0.9);
+}
+
+/* Asegurar que los iconos sean visibles */
+.mat-mini-fab .mat-icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+  line-height: 20px !important;
 }
 
 @media (max-width: 768px) {

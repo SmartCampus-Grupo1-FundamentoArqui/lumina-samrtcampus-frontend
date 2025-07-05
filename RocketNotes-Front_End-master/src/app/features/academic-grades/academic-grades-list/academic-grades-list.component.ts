@@ -12,7 +12,7 @@ import { AcademicGradeDialogComponent } from '../academic-grade-dialog/academic-
 export class AcademicGradesListComponent implements OnInit {
 
   academicGrades: AcademicGrade[] = [];
-  displayedColumns: string[] = ['name', 'level', 'section', 'capacity', 'currentSize', 'actions'];
+  displayedColumns: string[] = ['name', 'level', 'actions'];
   isLoading = false;
 
   constructor(

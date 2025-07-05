@@ -5,11 +5,13 @@ import { catchError } from 'rxjs/operators';
 import { environmentDevelopment } from "../../../../environments/environment.development";
 
 export interface Teacher {
-  id?: string;
-  name: string;
+  id?: number;
+  firstName: string;
+  lastNameFather: string;
+  lastNameMother: string;
   email: string;
-  department?: string;
-  subject?: string;
+  phone: string;
+  password?: string;
 }
 
 @Injectable({
@@ -38,7 +40,7 @@ export class TeacherService {
     );
   }
 
-  getById(id: string): Observable<Teacher> {
+  getById(id: number): Observable<Teacher> {
     return this.http.get<Teacher>(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() }).pipe(
       catchError(error => {
         console.error('Error fetching teacher:', error);
@@ -56,7 +58,7 @@ export class TeacherService {
     );
   }
 
-  update(id: string, teacher: Teacher): Observable<Teacher> {
+  update(id: number, teacher: Teacher): Observable<Teacher> {
     return this.http.put<Teacher>(`${this.apiUrl}/${id}`, teacher, { headers: this.getAuthHeaders() }).pipe(
       catchError(error => {
         console.error('Error updating teacher:', error);
@@ -65,7 +67,7 @@ export class TeacherService {
     );
   }
 
-  delete(id: string): Observable<any> {
+  delete(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() }).pipe(
       catchError(error => {
         console.error('Error deleting teacher:', error);

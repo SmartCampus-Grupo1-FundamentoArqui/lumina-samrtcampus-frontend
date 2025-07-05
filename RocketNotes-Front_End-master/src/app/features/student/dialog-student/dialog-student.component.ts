@@ -5,19 +5,19 @@ import { ClassroomsService } from '../../../infrastructure/services/classrooms.s
 import { Classroom } from '../../../infrastructure/model/classroom.entity';
 
 export interface Student {
-  classroom_id: number;
+  classroomId: number;
   dni: string;
-  first_name: string;
-  last_name_father: string;
-  last_name_mother: string;
+  firstName: string;
+  lastNameFather: string;
+  lastNameMother: string;
 }
 
 export interface Parent {
   dni: string;
   email: string;
-  first_name: string;
-  last_name_father: string;
-  last_name_mother: string;
+  firstName: string;
+  lastNameFather: string;
+  lastNameMother: string;
   phone: string;
 }
 
@@ -44,19 +44,19 @@ export class DialogStudentComponent implements OnInit {
     private classroomsService: ClassroomsService
   ) {
     this.studentForm = this.fb.group({
-      classroom_id: ['', [Validators.required]],
+      classroomId: ['', [Validators.required]],
       dni: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
-      first_name: ['', [Validators.required]],
-      last_name_father: ['', [Validators.required]],
-      last_name_mother: ['', [Validators.required]]
+      firstName: ['', [Validators.required]],
+      lastNameFather: ['', [Validators.required]],
+      lastNameMother: ['', [Validators.required]]
     });
 
     this.parentForm = this.fb.group({
       dni: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
       email: ['', [Validators.required, Validators.email]],
-      first_name: ['', [Validators.required]],
-      last_name_father: ['', [Validators.required]],
-      last_name_mother: ['', [Validators.required]],
+      firstName: ['', [Validators.required]],
+      lastNameFather: ['', [Validators.required]],
+      lastNameMother: ['', [Validators.required]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]]
     });
   }
@@ -77,29 +77,38 @@ export class DialogStudentComponent implements OnInit {
 
   onSubmit(): void {
     if (this.studentForm.valid && this.parentForm.valid) {
+      // Obtener el classroom seleccionado para validar disponibilidad
+      const classroomId = this.studentForm.get('classroomId')?.value;
+      const selectedClassroom = this.classrooms.find(c => c.id === classroomId);
+      
+      if (selectedClassroom && selectedClassroom.currentSize >= selectedClassroom.capacity) {
+        alert('The selected classroom is full. Please choose another classroom.');
+        return;
+      }
+
       // Crear objeto estudiante con todos los campos requeridos
       const student = {
-        classroom_id: this.studentForm.get('classroom_id')?.value,
+        classroomId: this.studentForm.get('classroomId')?.value,
         dni: this.studentForm.get('dni')?.value,
-        first_name: this.studentForm.get('first_name')?.value,
-        last_name_father: this.studentForm.get('last_name_father')?.value,
-        last_name_mother: this.studentForm.get('last_name_mother')?.value
+        firstName: this.studentForm.get('firstName')?.value,
+        lastNameFather: this.studentForm.get('lastNameFather')?.value,
+        lastNameMother: this.studentForm.get('lastNameMother')?.value
       };
 
       // Crear objeto padre con todos los campos requeridos
       const parent = {
         dni: this.parentForm.get('dni')?.value,
         email: this.parentForm.get('email')?.value,
-        first_name: this.parentForm.get('first_name')?.value,
-        last_name_father: this.parentForm.get('last_name_father')?.value,
-        last_name_mother: this.parentForm.get('last_name_mother')?.value,
+        firstName: this.parentForm.get('firstName')?.value,
+        lastNameFather: this.parentForm.get('lastNameFather')?.value,
+        lastNameMother: this.parentForm.get('lastNameMother')?.value,
         phone: this.parentForm.get('phone')?.value
       };
 
       // Validar que ningún campo sea null antes de cerrar el diálogo
-      if (Object.values(student).some(value => value === null) || 
-          Object.values(parent).some(value => value === null)) {
-        console.error('Algunos campos son nulos:', { student, parent });
+      if (Object.values(student).some(value => value === null || value === '') || 
+          Object.values(parent).some(value => value === null || value === '')) {
+        console.error('Some fields are null or empty:', { student, parent });
         return;
       }
 

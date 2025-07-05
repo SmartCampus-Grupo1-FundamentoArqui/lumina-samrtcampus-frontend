@@ -8,9 +8,6 @@ export interface AcademicGrade {
   id?: number;
   name: string;
   level: string;
-  section: string;
-  capacity: number;
-  currentSize?: number;
 }
 
 @Injectable({

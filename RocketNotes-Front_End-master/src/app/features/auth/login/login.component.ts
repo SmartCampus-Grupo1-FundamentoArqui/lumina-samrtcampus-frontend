@@ -33,7 +33,8 @@ export class LoginComponent implements OnInit {
         this.loginForm = new UntypedFormGroup({
             email: new UntypedFormControl(savedUserEmail, [Validators.required, Validators.email]),
             password: new UntypedFormControl('', Validators.required),
-            rememberMe: new UntypedFormControl(savedUserEmail !== null)
+            rememberMe: new UntypedFormControl(savedUserEmail !== null),
+            userRole: new UntypedFormControl('admin', Validators.required)
         });
     }
 
@@ -41,10 +42,11 @@ export class LoginComponent implements OnInit {
         const email = this.loginForm.get('email')?.value;
         const password = this.loginForm.get('password')?.value;
         const rememberMe = this.loginForm.get('rememberMe')?.value;
+        const userRole = this.loginForm.get('userRole')?.value;
 
         this.loading = true;
         this.authenticationService
-            .login(email.toLowerCase(), password)
+            .login(email.toLowerCase(), password, userRole)
             .subscribe(
                 data => {
                     if (rememberMe) {
@@ -55,7 +57,7 @@ export class LoginComponent implements OnInit {
                     this.router.navigate(['/']);
                 },
                 error => {
-                    this.notificationService.openSnackBar(error.error);
+                    this.notificationService.openSnackBar(error.error?.message || 'Error en el login');
                     this.loading = false;
                 }
             );

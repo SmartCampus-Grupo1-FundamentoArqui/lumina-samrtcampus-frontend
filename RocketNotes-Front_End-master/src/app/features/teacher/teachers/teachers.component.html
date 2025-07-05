@@ -1,12 +1,12 @@
 <h1 style="padding-left: 50px">
-    List of Teachers
+    Lista de Profesores
 </h1>
 
 
 <ul>
-    <li><h2>Search</h2></li>
+    <li><h2>Buscar</h2></li>
     <li><input  style="width: 300px; height: 25px"></li>
-    <li><button  (click)="openDialog()" class="button">ADD TEACHERS</button></li>
+    <li><button  (click)="openDialog()" class="button">AGREGAR PROFESOR</button></li>
 </ul>
 <div class="table">
 
@@ -23,13 +23,19 @@
         <!-- Name Column -->
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef> Full Name </th>
-            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.firstName}} {{element.lastNameFather}} {{element.lastNameMother}} </td>
         </ng-container>
 
-        <!-- Quantity Column -->
-        <ng-container matColumnDef="teacherCode">
-            <th mat-header-cell *matHeaderCellDef> Teacher Code </th>
-            <td mat-cell *matCellDef="let element"> {{element.teacherCode}} </td>
+        <!-- Email Column -->
+        <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef> Email </th>
+            <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+        </ng-container>
+
+        <!-- Phone Column -->
+        <ng-container matColumnDef="phone">
+            <th mat-header-cell *matHeaderCellDef> Phone </th>
+            <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
         </ng-container>
 
 
@@ -37,10 +43,14 @@
 
 
         <ng-container matColumnDef="action">
-            <th mat-header-cell *matHeaderCellDef> Action </th>
+            <th mat-header-cell *matHeaderCellDef> Acciones </th>
             <td mat-cell *matCellDef="let element">
-                <a (click)="onEditItem(element)"><mat-icon>edit</mat-icon></a>
-                <a (click)="onDeleteItem(element)"><mat-icon>delete</mat-icon></a>
+                <button mat-icon-button color="primary" (click)="onEditItem(element)" matTooltip="Editar profesor">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="onDeleteItem(element)" matTooltip="Eliminar profesor (No disponible)" [disabled]="true">
+                    <mat-icon>delete</mat-icon>
+                </button>
             </td>
         </ng-container>
 

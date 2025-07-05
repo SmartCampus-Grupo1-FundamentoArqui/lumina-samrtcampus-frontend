@@ -1,0 +1,73 @@
+.container {
+  padding: 20px;
+}
+
+.search-form {
+  margin-bottom: 24px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.form-row mat-form-field {
+  min-width: 200px;
+}
+
+.results {
+  margin-top: 24px;
+}
+
+.results h2 {
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.present-count {
+  color: #4caf50;
+  font-weight: 500;
+}
+
+.absent-count {
+  color: #f44336;
+  font-weight: 500;
+}
+
+.late-count {
+  color: #ff9800;
+  font-weight: 500;
+}
+
+.no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: #666;
+}
+
+.no-results mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  color: #ccc;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-column-presentCount,
+.mat-column-absentCount,
+.mat-column-lateCount {
+  text-align: center;
+  width: 80px;
+}

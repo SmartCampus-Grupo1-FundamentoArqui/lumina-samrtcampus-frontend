@@ -7,6 +7,7 @@ import { AcademicGradesListComponent } from './academic-grades-list/academic-gra
 import { AcademicGradeDialogComponent } from './academic-grade-dialog/academic-grade-dialog.component';
 
 import { CustomMaterialModule } from '../../custom-material/custom-material.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { CustomMaterialModule } from '../../custom-material/custom-material.modu
     AcademicGradesRoutingModule,
     CustomMaterialModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    SharedModule
   ]
 })
 export class AcademicGradesModule { } 

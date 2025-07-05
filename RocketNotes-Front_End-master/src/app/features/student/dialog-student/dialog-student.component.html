@@ -6,12 +6,14 @@
     <div class="form-row">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Classroom</mat-label>
-        <mat-select formControlName="classroom_id" required>
+        <mat-select formControlName="classroomId" required>
           <mat-option *ngFor="let classroom of classrooms" [value]="classroom.id">
-            Section {{ classroom.section }} ({{ classroom.classroom }}) - Capacity: {{ classroom.capacity }}
+            Section {{ classroom.section }} ({{ classroom.roomNumber }}) - 
+            Available: {{ classroom.capacity - classroom.currentSize }}/{{ classroom.capacity }}
+            <span *ngIf="classroom.currentSize >= classroom.capacity" style="color: red;"> - FULL</span>
           </mat-option>
         </mat-select>
-        <mat-error *ngIf="studentForm.get('classroom_id')?.hasError('required')">
+        <mat-error *ngIf="studentForm.get('classroomId')?.hasError('required')">
           Please select a classroom
         </mat-error>
       </mat-form-field>
@@ -33,8 +35,8 @@
     <div class="form-row">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>First Name</mat-label>
-        <input matInput formControlName="first_name" required>
-        <mat-error *ngIf="studentForm.get('first_name')?.hasError('required')">
+        <input matInput formControlName="firstName" required>
+        <mat-error *ngIf="studentForm.get('firstName')?.hasError('required')">
           First name is required
         </mat-error>
       </mat-form-field>
@@ -43,8 +45,8 @@
     <div class="form-row">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Father's Last Name</mat-label>
-        <input matInput formControlName="last_name_father" required>
-        <mat-error *ngIf="studentForm.get('last_name_father')?.hasError('required')">
+        <input matInput formControlName="lastNameFather" required>
+        <mat-error *ngIf="studentForm.get('lastNameFather')?.hasError('required')">
           Father's last name is required
         </mat-error>
       </mat-form-field>
@@ -53,8 +55,8 @@
     <div class="form-row">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Mother's Last Name</mat-label>
-        <input matInput formControlName="last_name_mother" required>
-        <mat-error *ngIf="studentForm.get('last_name_mother')?.hasError('required')">
+        <input matInput formControlName="lastNameMother" required>
+        <mat-error *ngIf="studentForm.get('lastNameMother')?.hasError('required')">
           Mother's last name is required
         </mat-error>
       </mat-form-field>
@@ -92,8 +94,8 @@
     <div class="form-row">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>First Name</mat-label>
-        <input matInput formControlName="first_name" required>
-        <mat-error *ngIf="parentForm.get('first_name')?.hasError('required')">
+        <input matInput formControlName="firstName" required>
+        <mat-error *ngIf="parentForm.get('firstName')?.hasError('required')">
           First name is required
         </mat-error>
       </mat-form-field>
@@ -102,8 +104,8 @@
     <div class="form-row">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Father's Last Name</mat-label>
-        <input matInput formControlName="last_name_father" required>
-        <mat-error *ngIf="parentForm.get('last_name_father')?.hasError('required')">
+        <input matInput formControlName="lastNameFather" required>
+        <mat-error *ngIf="parentForm.get('lastNameFather')?.hasError('required')">
           Father's last name is required
         </mat-error>
       </mat-form-field>
@@ -112,8 +114,8 @@
     <div class="form-row">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Mother's Last Name</mat-label>
-        <input matInput formControlName="last_name_mother" required>
-        <mat-error *ngIf="parentForm.get('last_name_mother')?.hasError('required')">
+        <input matInput formControlName="lastNameMother" required>
+        <mat-error *ngIf="parentForm.get('lastNameMother')?.hasError('required')">
           Mother's last name is required
         </mat-error>
       </mat-form-field>

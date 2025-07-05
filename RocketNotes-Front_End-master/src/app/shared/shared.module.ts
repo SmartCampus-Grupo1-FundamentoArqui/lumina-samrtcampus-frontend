@@ -36,7 +36,8 @@ import { LayoutComponent } from './layout/layout.component';
         ConfirmDialogComponent,
         ContentPlaceholderAnimationComponent,
         LocalDatePipe,
-        YesNoPipe
+        YesNoPipe,
+        LayoutComponent
     ]
 })
 export class SharedModule { }

@@ -1,0 +1,80 @@
+<div class="container">
+  <div class="header">
+    <h1>Attendance Management</h1>
+    <div class="header-actions">
+      <button mat-button color="accent" routerLink="/attendance/history">
+        <mat-icon>history</mat-icon>
+        View History
+      </button>
+      <button mat-raised-button color="primary" (click)="openCreateDialog()">
+        <mat-icon>add</mat-icon>
+        New Attendance Session
+      </button>
+    </div>
+  </div>
+
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="attendanceSessions">
+      
+      <!-- Date Column -->
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let session">{{session.date | date:'shortDate'}}</td>
+      </ng-container>
+
+      <!-- Course Column -->
+      <ng-container matColumnDef="course">
+        <th mat-header-cell *matHeaderCellDef>Course</th>
+        <td mat-cell *matCellDef="let session">Course ID: {{session.courseId}}</td>
+      </ng-container>
+
+      <!-- Classroom Column -->
+      <ng-container matColumnDef="classroom">
+        <th mat-header-cell *matHeaderCellDef>Classroom</th>
+        <td mat-cell *matCellDef="let session">Classroom ID: {{session.classroomId}}</td>
+      </ng-container>
+
+      <!-- Total Students Column -->
+      <ng-container matColumnDef="totalStudents">
+        <th mat-header-cell *matHeaderCellDef>Total Students</th>
+        <td mat-cell *matCellDef="let session">{{session.studentAttendances.length}}</td>
+      </ng-container>
+
+      <!-- Present Count Column -->
+      <ng-container matColumnDef="presentCount">
+        <th mat-header-cell *matHeaderCellDef>Present</th>
+        <td mat-cell *matCellDef="let session">
+          <span class="present-count">{{getPresentCount(session)}}</span>
+        </td>
+      </ng-container>
+
+      <!-- Absent Count Column -->
+      <ng-container matColumnDef="absentCount">
+        <th mat-header-cell *matHeaderCellDef>Absent</th>
+        <td mat-cell *matCellDef="let session">
+          <span class="absent-count">{{getAbsentCount(session)}}</span>
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let session">
+          <button mat-icon-button color="primary" (click)="editAttendance(session)" matTooltip="Edit Attendance">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <!-- Message when no data -->
+    <div *ngIf="attendanceSessions.length === 0" class="no-data">
+      <mat-icon>event_note</mat-icon>
+      <p>No attendance sessions found.</p>
+      <p>Click "New Attendance Session" to create one.</p>
+    </div>
+  </div>
+</div>

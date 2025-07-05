@@ -2,15 +2,15 @@
     <form [formGroup]="registerForm" fxFlex="30%" fxFlex.sm="50%" fxFlex.xs="90%">
         <mat-card>
             <mat-card-title>ROCKET<span>NOTES</span></mat-card-title>
-            <mat-card-subtitle>Register your account</mat-card-subtitle>
+            <mat-card-subtitle>Register your account (Admin only)</mat-card-subtitle>
             <mat-card-content>
 
-                <div class="full-width role-selection">
-                    <mat-radio-group formControlName="userRole" aria-label="User Role">
-                        <mat-radio-button value="admin" aria-label="Administrator">Administrator</mat-radio-button>
-                        <mat-radio-button value="teacher" aria-label="Teacher">Teacher</mat-radio-button>
-                    </mat-radio-group>
-                </div>
+                <mat-form-field class="full-width">
+                    <input id="fullNameInput" matInput placeholder="Full Name" formControlName="fullName" autocomplete="name" type="text" aria-label="Full Name">
+                    <mat-error id="requiredFullNameError" *ngIf="registerForm.controls['fullName'].hasError('required')">
+                        Full name is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
 
                 <mat-form-field class="full-width">
                     <input id="emailInput" matInput placeholder="Email" formControlName="email" autocomplete="email" type="email" aria-label="Email">

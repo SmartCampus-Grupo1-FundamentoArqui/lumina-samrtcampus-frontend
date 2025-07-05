@@ -1,0 +1,79 @@
+<div class="container">
+  <h1>Attendance History</h1>
+  
+  <form [formGroup]="historyForm" (ngSubmit)="searchHistory()" class="search-form">
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Course</mat-label>
+        <mat-select formControlName="courseId">
+          <mat-option *ngFor="let course of courses" [value]="course.id">
+            {{course.name}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="historyForm.get('courseId')?.hasError('required')">
+          Course is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Week Number</mat-label>
+        <input matInput type="number" formControlName="week" min="1" max="52">
+        <mat-error *ngIf="historyForm.get('week')?.hasError('required')">
+          Week is required
+        </mat-error>
+        <mat-error *ngIf="historyForm.get('week')?.hasError('min') || historyForm.get('week')?.hasError('max')">
+          Week must be between 1 and 52
+        </mat-error>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="!historyForm.valid">
+        Search
+      </button>
+    </div>
+  </form>
+
+  <div class="results" *ngIf="attendanceSessions.length > 0">
+    <h2>Results</h2>
+    <table mat-table [dataSource]="attendanceSessions" class="mat-elevation-z8">
+      
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let session">{{session.date | date:'shortDate'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="dayOfWeek">
+        <th mat-header-cell *matHeaderCellDef>Day</th>
+        <td mat-cell *matCellDef="let session">{{session.dayOfWeek}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="presentCount">
+        <th mat-header-cell *matHeaderCellDef>Present</th>
+        <td mat-cell *matCellDef="let session" class="present-count">
+          {{getPresentCount(session)}}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="absentCount">
+        <th mat-header-cell *matHeaderCellDef>Absent</th>
+        <td mat-cell *matCellDef="let session" class="absent-count">
+          {{getAbsentCount(session)}}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lateCount">
+        <th mat-header-cell *matHeaderCellDef>Late</th>
+        <td mat-cell *matCellDef="let session" class="late-count">
+          {{getLateCount(session)}}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <div *ngIf="attendanceSessions.length === 0 && historyForm.dirty" class="no-results">
+    <mat-icon>search_off</mat-icon>
+    <p>No attendance records found for the selected criteria.</p>
+  </div>
+</div>

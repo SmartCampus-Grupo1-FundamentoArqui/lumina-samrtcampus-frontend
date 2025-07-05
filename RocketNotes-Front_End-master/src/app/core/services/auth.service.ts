@@ -19,32 +19,35 @@ export class AuthenticationService {
         @Inject('LOCALSTORAGE') private localStorage: Storage) {
     }
 
-    login(usernameOrEmail: string, password: string): Observable<any> {
+    login(email: string, password: string, userRole?: string): Observable<any> {
         const httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json'
             })
         };
 
-        // Determinar si es email o username
-        const isEmail = usernameOrEmail.includes('@');
-        const requestBody = isEmail ? 
-            { email: usernameOrEmail, password: password } :
-            { username: usernameOrEmail, password: password };
+        const requestBody = { email: email, password: password };
+        
+        // Determinar endpoint según el rol
+        const endpoint = userRole === 'teacher' ? '/login-teacher' : '/login';
 
-        return this.http.post(`${this.apiUrl}/login`, requestBody, httpOptions).pipe(
+        return this.http.post(`${this.apiUrl}${endpoint}`, requestBody, httpOptions).pipe(
             map((response: any) => {
                 if (response && response.token) {
                     // Decodificar el token JWT
                     const decodedToken: any = jwt_decode.default(response.token);
                     
+                    // Determinar si es admin basado en el rol del token
+                    const isAdmin = decodedToken.role === 'ADMIN';
+                    
                     // Guardar en localStorage
                     this.localStorage.setItem('currentUser', JSON.stringify({
                         token: response.token,
-                        isAdmin: true, // Puedes ajustar esto según tu lógica
+                        isAdmin: isAdmin,
                         email: decodedToken.sub,
                         id: decodedToken.sub,
                         alias: decodedToken.sub,
+                        role: decodedToken.role,
                         expiration: new Date(decodedToken.exp * 1000),
                         fullName: decodedToken.sub
                     }));
@@ -68,10 +71,17 @@ export class AuthenticationService {
             })
         };
 
+        // Mapear los datos al formato correcto que espera el backend
+        const requestBody = {
+            fullName: userData.fullName,
+            email: userData.email,
+            password: userData.password
+        };
+
         console.log('Registration URL:', `${this.apiUrl}/register`);
-        console.log('Registration data:', userData);
+        console.log('Registration data:', requestBody);
         
-        return this.http.post(`${this.apiUrl}/register`, userData, httpOptions);
+        return this.http.post(`${this.apiUrl}/register`, requestBody, httpOptions);
     }
 
     logout(): void {
@@ -120,5 +130,35 @@ export class AuthenticationService {
             password: password,
             confirmPassword: confirmPassword
         }, httpOptions);
+    }
+
+    isAuthenticated(): boolean {
+        const user = this.getCurrentUser();
+        return user && user.token && !this.isTokenExpired(user.token);
+    }
+
+    isAdmin(): boolean {
+        const user = this.getCurrentUser();
+        return user && user.role === 'ADMIN';
+    }
+
+    isTeacher(): boolean {
+        const user = this.getCurrentUser();
+        return user && user.role === 'TEACHER';
+    }
+
+    getUserRole(): string | null {
+        const user = this.getCurrentUser();
+        return user ? user.role : null;
+    }
+
+    private isTokenExpired(token: string): boolean {
+        try {
+            const decodedToken: any = jwt_decode.default(token);
+            const currentTime = Date.now() / 1000;
+            return decodedToken.exp < currentTime;
+        } catch (error) {
+            return true;
+        }
     }
 }

@@ -43,8 +43,9 @@ export class ClassroomCreateFormComponent implements OnInit {
     if (this.editMode && this.classroom) {
       this.classroomForm.patchValue({
         section: this.classroom.section,
-        roomNumber: this.classroom.classroom,
-        capacity: this.classroom.capacity
+        roomNumber: this.classroom.roomNumber,
+        capacity: this.classroom.capacity,
+        gradeId: this.classroom.grade?.id || ''
       });
     }
   }
@@ -68,12 +69,18 @@ export class ClassroomCreateFormComponent implements OnInit {
   onSubmit() {
     if (this.classroomForm.valid) {
       this.isLoading = true;
+      
+      const formValues = this.classroomForm.value;
+      console.log('Form values:', formValues);
+      
       const classroomRequest: ClassroomRequest = {
-        section: this.classroomForm.get('section')?.value,
-        roomNumber: this.classroomForm.get('roomNumber')?.value,
-        capacity: Number(this.classroomForm.get('capacity')?.value),
-        gradeId: Number(this.classroomForm.get('gradeId')?.value)
+        section: formValues.section,
+        roomNumber: formValues.roomNumber,
+        capacity: Number(formValues.capacity),
+        gradeId: Number(formValues.gradeId)
       };
+      
+      console.log('Classroom request:', classroomRequest);
 
       const request$ = this.editMode && this.classroom 
         ? this.classroomsService.update(String(this.classroom.id), classroomRequest)
@@ -81,6 +88,7 @@ export class ClassroomCreateFormComponent implements OnInit {
 
       request$.subscribe({
         next: (classroom: Classroom) => {
+          console.log('Classroom operation successful:', classroom);
           this.snackBar.open(
             this.editMode ? 'Classroom updated successfully' : 'Classroom created successfully', 
             'Close',
@@ -97,13 +105,14 @@ export class ClassroomCreateFormComponent implements OnInit {
           }
           this.dialogRef.close(classroom);
         },
-        error: (error: Error) => {
-          console.error('Error with classroom:', error);
+        error: (error: any) => {
+          console.error('Error with classroom operation:', error);
+          const errorMessage = error.error?.message || error.message || 'Unknown error occurred';
           this.snackBar.open(
-            `Error ${this.editMode ? 'updating' : 'creating'} classroom`, 
+            `Error ${this.editMode ? 'updating' : 'creating'} classroom: ${errorMessage}`, 
             'Close',
             {
-              duration: 3000,
+              duration: 5000,
               horizontalPosition: 'center',
               verticalPosition: 'bottom'
             }
@@ -111,6 +120,15 @@ export class ClassroomCreateFormComponent implements OnInit {
         },
         complete: () => {
           this.isLoading = false;
+        }
+      });
+    } else {
+      console.log('Form is invalid:', this.classroomForm.errors);
+      Object.keys(this.classroomForm.controls).forEach(key => {
+        const control = this.classroomForm.get(key);
+        if (control?.invalid) {
+          console.log(`${key} is invalid:`, control.errors);
+          control.markAsTouched();
         }
       });
     }
