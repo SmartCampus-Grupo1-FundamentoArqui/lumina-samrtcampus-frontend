@@ -13,7 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class ClassroomCapacityComponent implements OnInit {
   dataSource: Classroom[] = [];
-  displayedColumns: string[] = ['section', 'classroom', 'grade', 'gradeId', 'capacity', 'currentSize', 'availability', 'actions'];
+  displayedColumns: string[] = ['section', 'classroom', 'grade', 'capacity', 'currentSize', 'availability', 'actions'];
   isLoading = false;
 
   constructor(
@@ -37,10 +37,8 @@ export class ClassroomCapacityComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Usar setTimeout para evitar el error de detección de cambios
-        setTimeout(() => {
-          this.loadClassrooms();
-        }, 0);
+        // Reload classrooms after successful creation
+        this.loadClassrooms();
       }
     });
   }
@@ -50,19 +48,15 @@ export class ClassroomCapacityComponent implements OnInit {
       width: '550px',
       data: { 
         editMode: true, 
-        classroom: classroom 
+        classroom: { ...classroom } // Create a copy to avoid reference issues
       },
       disableClose: true
     });
 
-    dialogRef.componentInstance.editMode = true;
-    dialogRef.componentInstance.classroom = classroom;
-
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        setTimeout(() => {
-          this.loadClassrooms();
-        }, 0);
+        // Reload classrooms after successful edit
+        this.loadClassrooms();
       }
     });
   }
@@ -75,9 +69,7 @@ export class ClassroomCapacityComponent implements OnInit {
             duration: 3000,
             panelClass: ['success-snackbar']
           });
-          setTimeout(() => {
-            this.loadClassrooms();
-          }, 0);
+          this.loadClassrooms();
         },
         error: (err) => {
           console.error('Error deleting classroom:', err);
@@ -105,16 +97,23 @@ export class ClassroomCapacityComponent implements OnInit {
     this.isLoading = true;
     this.classroomService.getAll().subscribe({
       next: (data: any) => {
-        this.dataSource = data;
-        this.isLoading = false;
-        // Forzar detección de cambios después de cargar los datos
-        this.cdr.detectChanges();
-        console.log('Classrooms loaded with grade data:', data);
+        setTimeout(() => {
+          this.dataSource = data;
+          this.isLoading = false;
+          this.cdr.detectChanges();
+          console.log('Classrooms loaded with grade data:', data);
+        }, 0);
       },
       error: (err: any) => {
         console.error('Error loading classrooms:', err);
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        setTimeout(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }, 0);
+        this.snackBar.open('Error al cargar las aulas', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
       }
     });
   }

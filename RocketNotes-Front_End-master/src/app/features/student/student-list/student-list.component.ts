@@ -67,6 +67,7 @@ export class StudentListComponent implements OnInit {
         };
 
         console.log('Sending student request:', studentRequest);
+        console.log('ClassroomId value:', result.student.classroomId, 'Type:', typeof result.student.classroomId);
         
         this.studentsService.create(studentRequest).subscribe({
           next: (response) => {

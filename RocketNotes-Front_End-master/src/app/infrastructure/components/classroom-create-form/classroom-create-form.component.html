@@ -1,9 +1,9 @@
 <div class="dialog-container">
-  <h2 mat-dialog-title>Create Classroom</h2>
+  <h2 mat-dialog-title>{{editMode ? 'Edit Classroom' : 'Create Classroom'}}</h2>
   
   <form [formGroup]="classroomForm" (ngSubmit)="onSubmit()" class="classroom-form">
     <mat-dialog-content>
-      <h3 class="form-subtitle">Create New Classroom</h3>
+      <h3 class="form-subtitle">{{editMode ? 'Edit Classroom' : 'Create New Classroom'}}</h3>
       
       <div class="form-grid">
         <mat-form-field appearance="outline" class="form-field">
@@ -61,7 +61,7 @@
       <button mat-raised-button color="primary" type="submit" [disabled]="classroomForm.invalid || isLoading">
         <mat-progress-spinner mode="indeterminate" diameter="20" *ngIf="isLoading" class="spinner">
         </mat-progress-spinner>
-        <span *ngIf="!isLoading">Create Classroom</span>
+        <span *ngIf="!isLoading">{{editMode ? 'Update Classroom' : 'Create Classroom'}}</span>
       </button>
     </mat-dialog-actions>
   </form>

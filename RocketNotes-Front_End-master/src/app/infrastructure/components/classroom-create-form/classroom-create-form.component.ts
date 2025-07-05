@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, Inject, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClassroomsService, ClassroomRequest } from '../../services/classrooms.service';
 import { AcademicGradesService, AcademicGrade } from '../../../core/services/academic-grades.service';
@@ -28,7 +28,9 @@ export class ClassroomCreateFormComponent implements OnInit {
     private dialogRef: MatDialogRef<ClassroomCreateFormComponent>,
     private classroomsService: ClassroomsService,
     private academicGradesService: AcademicGradesService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.classroomForm = this.formBuilder.group({
       section: ['', [Validators.required]],
@@ -36,24 +38,35 @@ export class ClassroomCreateFormComponent implements OnInit {
       capacity: ['', [Validators.required, Validators.min(1)]],
       gradeId: ['', [Validators.required]]
     });
+    
+    // Initialize edit mode and classroom from dialog data
+    if (this.data) {
+      this.editMode = this.data.editMode || false;
+      this.classroom = this.data.classroom || null;
+    }
   }
 
   ngOnInit(): void {
     this.loadGrades();
-    if (this.editMode && this.classroom) {
-      this.classroomForm.patchValue({
-        section: this.classroom.section,
-        roomNumber: this.classroom.roomNumber,
-        capacity: this.classroom.capacity,
-        gradeId: this.classroom.grade?.id || ''
-      });
-    }
   }
 
   loadGrades() {
     this.academicGradesService.getAll().subscribe({
       next: (grades) => {
         this.grades = grades;
+        
+        // If we're in edit mode and have a classroom, patch the form after grades are loaded
+        if (this.editMode && this.classroom) {
+          setTimeout(() => {
+            this.classroomForm.patchValue({
+              section: this.classroom!.section,
+              roomNumber: this.classroom!.roomNumber,
+              capacity: this.classroom!.capacity,
+              gradeId: this.classroom!.grade?.id || ''
+            });
+            this.cdr.detectChanges();
+          }, 0);
+        }
       },
       error: (error: Error) => {
         console.error('Error loading grades:', error);

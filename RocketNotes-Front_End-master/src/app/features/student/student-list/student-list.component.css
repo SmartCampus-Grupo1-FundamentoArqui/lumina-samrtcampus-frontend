@@ -20,3 +20,26 @@ ul{
     width: 200px;
 
 }
+
+/* Estilos para la información del aula */
+.classroom-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.4;
+}
+
+.classroom-primary {
+    font-weight: 500;
+    color: #333;
+}
+
+.classroom-secondary {
+    font-size: 0.85em;
+    color: #666;
+    margin-top: 2px;
+}
+
+.no-classroom {
+    color: #999;
+    font-style: italic;
+}
