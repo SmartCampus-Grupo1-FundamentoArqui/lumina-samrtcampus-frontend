@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
+import { FacilitiesModule } from '../maintenance/facilities.module'; 
 import { ListFacilitiesComponent } from './list-facilities/list-facilities.component';
 import { FacilitieRoutingModule } from "./facilitie-routing.module";
 import { SharedModule } from "../../shared/shared.module";
@@ -31,7 +32,8 @@ import { FacilitieDialogComponent } from './facilitie-dialog/facilitie-dialog.co
     MatInputModule,
     MatIconModule,
     MatTableModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    FacilitiesModule
   ],
   exports: [
     ListFacilitiesComponent

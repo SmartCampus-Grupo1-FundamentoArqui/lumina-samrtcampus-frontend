@@ -1,9 +1,12 @@
-import {Component, EventEmitter, Input, Output, ViewChild, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ViewChild, OnInit, Inject, Optional, ChangeDetectorRef} from '@angular/core';
 import {Classroom} from "../../model/classroom.entity";
 import {NgForm} from "@angular/forms";
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Course} from "../../model/course.entity";
 import {AcademicGradesService, AcademicGrade} from "../../../core/services/academic-grades.service";
+import {ClassroomsService} from "../../services/classrooms.service";
 import {TeacherService} from "../../../features/teacher/service/teacher.service";
+import {CoursesService} from '../../services/courses.service';
 
 @Component({
   selector: 'app-course-create-form',
@@ -21,20 +24,48 @@ export class CourseCreateFormComponent implements OnInit {
   @ViewChild('courseForm', { static: false}) courseForm!: NgForm;
 
   academicGrades: AcademicGrade[] = [];
+  classrooms: Classroom[] = [];
   teachers: any[] = [];
 
   // Methods
 
   constructor(
     private academicGradesService: AcademicGradesService,
-    private teacherService: TeacherService
+    private teacherService: TeacherService,
+    private classroomsService: ClassroomsService,
+    private coursesService: CoursesService,
+    private cdr: ChangeDetectorRef,
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
+    @Optional() public dialogRef?: MatDialogRef<CourseCreateFormComponent>
   ) {
-    this.course = {} as Course;
+    // Inicializa el formulario correctamente para edición o creación
+    if (data && data.editMode) {
+      this.editMode = true;
+      this.course = { ...data };
+      delete (this.course as any).editMode;
+    } else if (data && data.classroomId) {
+      this.course = { classroomId: data.classroomId } as Course;
+    } else {
+      this.course = {} as Course;
+    }
   }
 
   ngOnInit(): void {
     this.loadAcademicGrades();
     this.loadTeachers();
+    this.loadClassrooms();
+    // Forzar actualización para evitar ExpressionChangedAfterItHasBeenCheckedError
+    this.cdr.detectChanges();
+  }
+  loadClassrooms(): void {
+    this.classroomsService.getAll().subscribe({
+      next: (classrooms) => {
+        this.classrooms = classrooms;
+      },
+      error: (error) => {
+        console.error('Error loading classrooms:', error);
+      }
+    });
   }
 
   loadAcademicGrades(): void {
@@ -72,11 +103,24 @@ export class CourseCreateFormComponent implements OnInit {
   onSubmit() {
     if (this.courseForm.form.valid) {
       if (this.editMode) {
+        // Aquí podrías implementar la lógica de actualización si es necesario
         this.courseUpdated.emit(this.course);
+        this.resetEditState();
       } else {
-        this.courseAdded.emit(this.course);
+        this.coursesService.create(this.course).subscribe({
+          next: (createdCourse) => {
+            this.courseAdded.emit(createdCourse);
+            if (this.dialogRef) {
+              this.dialogRef.close();
+            }
+            this.resetEditState();
+          },
+          error: (err) => {
+            console.error('Error creating course:', err);
+            // Aquí podrías mostrar un mensaje de error al usuario
+          }
+        });
       }
-      this.resetEditState();
     } else {
       console.log('invalid data');
     }

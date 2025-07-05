@@ -11,10 +11,10 @@
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
-                    <mat-label>Grado Académico</mat-label>
-                    <mat-select name="gradeId" required [(ngModel)]="course.gradeId">
-                        <mat-option *ngFor="let grade of academicGrades" [value]="grade.id">
-                            {{grade.name}} - {{grade.level}}
+                    <mat-label>Aula</mat-label>
+                    <mat-select name="classroomId" required [(ngModel)]="course.classroomId">
+                        <mat-option *ngFor="let classroom of classrooms" [value]="classroom.id">
+                            {{classroom.roomNumber}} - {{classroom.section}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -33,6 +33,12 @@
                     <mat-label>Horario</mat-label>
                     <input class="input-section" matInput placeholder="Ej: Lun-Mié 08:00-09:30" 
                            name="schedule" required [(ngModel)]="course.schedule">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>URL de la imagen</mat-label>
+                    <input class="input-section" matInput placeholder="https://..." 
+                           name="imageUrl" [(ngModel)]="course.imageUrl">
                 </mat-form-field>
 
             </form>

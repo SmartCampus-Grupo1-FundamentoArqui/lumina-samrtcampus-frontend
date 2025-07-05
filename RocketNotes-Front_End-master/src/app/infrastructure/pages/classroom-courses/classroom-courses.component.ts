@@ -26,8 +26,8 @@ export class ClassroomCoursesComponent implements OnInit {
     });
   }
 
-  goToCoursesView() {
-    this.router.navigate(['classroom-courses/courses-view']);
+  goToCoursesView(classroom: Classroom) {
+    this.router.navigate(['classroom-courses/courses-view', classroom.id]);
   }
 
 }

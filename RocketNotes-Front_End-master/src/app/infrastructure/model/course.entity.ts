@@ -1,7 +1,8 @@
 export interface Course {
   id?: number;
   name: string;
-  gradeId: number;
+  classroomId: number;
   teacherId?: number;
   schedule: string;
+  imageUrl?: string;
 }

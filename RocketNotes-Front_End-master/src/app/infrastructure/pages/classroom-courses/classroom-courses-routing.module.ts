@@ -13,11 +13,11 @@ const routes: Routes =[
         component: LayoutComponent,
         children:[
             {path:'', component: ClassroomCoursesComponent},
+            {path:'courses-view/:classroomId', component: CoursesViewComponent},
+            {path:'course-detail/:id', component: CourseDetailComponent},
         ]
     },
-    { path: '', redirectTo: '/classroom-courses', pathMatch: 'full' },
-    { path: 'courses-view', component: CoursesViewComponent },
-    { path: 'course-detail/:id', component: CourseDetailComponent },
+    { path: '', redirectTo: '/classroom-courses', pathMatch: 'full' }
 ];
 @NgModule({
     imports:[RouterModule.forChild(routes)],
