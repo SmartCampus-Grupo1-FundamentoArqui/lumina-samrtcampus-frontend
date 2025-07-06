@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Observable, throwError, forkJoin, of } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { environmentDevelopment } from "../../../environments/environment.development";
-import { ClassroomsService } from './classrooms.service';
-import { Classroom } from '../model/classroom.entity';
 
 export interface Student {
   id?: number;
@@ -13,8 +11,8 @@ export interface Student {
   lastNameMother: string;
   dni: string;
   classroomId?: number;
-  classroom?: Classroom; // Información enriquecida del aula
   parent?: Parent;
+  classroom?: { id: number }; // Para compatibilidad con backend
 }
 
 export interface Parent {
@@ -51,10 +49,7 @@ export class StudentsService {
 
   private apiUrl = `${environmentDevelopment.serverBasePath}/students`;
 
-  constructor(
-    private http: HttpClient,
-    private classroomsService: ClassroomsService
-  ) {}
+  constructor(private http: HttpClient) {}
 
   private getAuthHeaders(): HttpHeaders {
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
@@ -66,33 +61,10 @@ export class StudentsService {
 
   getAll(): Observable<Student[]> {
     return this.http.get<Student[]>(this.apiUrl, { headers: this.getAuthHeaders() }).pipe(
-      switchMap(students => {
-        if (!students || students.length === 0) {
-          return of([]);
-        }
-
-        // Obtener todas las aulas para enriquecer los datos
-        return this.classroomsService.getAll().pipe(
-          map(classrooms => {
-            // Crear un mapa de aulas por ID para búsqueda rápida
-            const classroomMap = new Map<number, Classroom>();
-            classrooms.forEach(classroom => {
-              classroomMap.set(classroom.id, classroom);
-            });
-
-            // Enriquecer cada estudiante con información del aula
-            return students.map(student => ({
-              ...student,
-              classroom: student.classroomId ? classroomMap.get(student.classroomId) : undefined
-            }));
-          }),
-          catchError(classroomError => {
-            console.warn('Error fetching classrooms, returning students without classroom info:', classroomError);
-            // Si falla la obtención de aulas, devolver estudiantes sin información de aula
-            return of(students);
-          })
-        );
-      }),
+      map(students => students.map(student => ({
+        ...student,
+        classroomId: student.classroomId ?? (student.classroom && student.classroom.id ? student.classroom.id : undefined)
+      }))),
       catchError(error => {
         console.error('Error fetching students:', error);
         return throwError(() => error);
@@ -102,6 +74,10 @@ export class StudentsService {
 
   getById(id: string): Observable<Student> {
     return this.http.get<Student>(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() }).pipe(
+      map(student => ({
+        ...student,
+        classroomId: student.classroomId ?? (student.classroom && student.classroom.id ? student.classroom.id : undefined)
+      })),
       catchError(error => {
         console.error('Error fetching student:', error);
         return throwError(() => error);
@@ -117,8 +93,11 @@ export class StudentsService {
     });
     return this.http.post<Student>(this.apiUrl, request, { headers: this.getAuthHeaders() }).pipe(
       map(response => {
-        console.log('Student created successfully:', response);
-        return response;
+        // Mapear classroomId si viene anidado
+        return {
+          ...response,
+          classroomId: response.classroomId ?? (response.classroom && response.classroom.id ? response.classroom.id : undefined)
+        };
       }),
       catchError(error => {
         console.error('Error creating student:', error);

@@ -95,13 +95,6 @@ export class DialogStudentComponent implements OnInit {
         lastNameMother: this.studentForm.get('lastNameMother')?.value
       };
 
-      // Log para debugging
-      console.log('Student form values:', {
-        classroomId: this.studentForm.get('classroomId')?.value,
-        classroomIdType: typeof this.studentForm.get('classroomId')?.value,
-        student: student
-      });
-
       // Crear objeto padre con todos los campos requeridos
       const parent = {
         dni: this.parentForm.get('dni')?.value,
@@ -118,8 +111,6 @@ export class DialogStudentComponent implements OnInit {
         console.error('Some fields are null or empty:', { student, parent });
         return;
       }
-
-      console.log('Closing dialog with data:', { student, parent });
 
       this.dialogRef.close({
         student,

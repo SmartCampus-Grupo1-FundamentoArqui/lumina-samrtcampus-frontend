@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from "@angular/material/dialog";
 import { DialogStudentComponent } from "../dialog-student/dialog-student.component";
 import { StudentsService, Student, StudentRequest } from "../../../infrastructure/services/students.service";
+import { ClassroomsService } from '../../../infrastructure/services/classrooms.service';
+import { Classroom } from '../../../infrastructure/model/classroom.entity';
 
 @Component({
   selector: 'app-student-list',
@@ -11,14 +13,25 @@ import { StudentsService, Student, StudentRequest } from "../../../infrastructur
 export class StudentListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'firstName', 'lastNameFather', 'lastNameMother', 'dni', 'classroom', 'action'];
   dataSource: Student[] = [];
+  classrooms: Classroom[] = [];
 
   constructor(
     private studentsService: StudentsService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private classroomsService: ClassroomsService
   ) { }
 
   ngOnInit(): void {
-    this.refreshStudentList();
+    this.classroomsService.getAll().subscribe({
+      next: (classrooms) => {
+        this.classrooms = classrooms;
+        this.refreshStudentList();
+      },
+      error: (error) => {
+        console.error('Error loading classrooms:', error);
+        this.refreshStudentList();
+      }
+    });
   }
 
   refreshStudentList(): void {
@@ -31,6 +44,13 @@ export class StudentListComponent implements OnInit {
         console.error('Error loading students:', error);
       }
     });
+  }
+
+  getClassroomDisplayName(classroomId: number | undefined): string {
+    const classroom = this.classrooms.find(c => c.id === classroomId);
+    return classroom
+      ? `Section ${classroom.section} (${classroom.roomNumber})`
+      : 'Not Assigned';
   }
 
   onEditItem(student: Student): void {

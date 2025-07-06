@@ -44,18 +44,7 @@
         <ng-container matColumnDef="classroom">
             <th mat-header-cell *matHeaderCellDef> Classroom </th>
             <td mat-cell *matCellDef="let element"> 
-                <div *ngIf="element.classroom; else fallbackClassroom" class="classroom-info">
-                    <span class="classroom-primary">{{ element.classroom.grade.name }} - Section {{ element.classroom.section }}</span>
-                    <span class="classroom-secondary">Room {{ element.classroom.roomNumber }}</span>
-                </div>
-                <ng-template #fallbackClassroom>
-                    <span *ngIf="element.classroomId; else noClassroom" class="classroom-secondary">
-                        Classroom ID: {{ element.classroomId }}
-                    </span>
-                    <ng-template #noClassroom>
-                        <span class="no-classroom">Not Assigned</span>
-                    </ng-template>
-                </ng-template>
+                {{ getClassroomDisplayName(element.classroomId) }}
             </td>
         </ng-container>
 
