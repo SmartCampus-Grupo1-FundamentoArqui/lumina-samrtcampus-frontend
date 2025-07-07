@@ -46,7 +46,7 @@
     <ng-container matColumnDef="currentSize" aria-label="Classroom enrolled students column">
       <th mat-header-cell *matHeaderCellDef> Enrolled Students </th>
       <td mat-cell *matCellDef="let element"> 
-        <span class="enrollment-info">{{element.currentSize}}/{{element.capacity}}</span>
+        <span class="enrollment-info">{{getEnrolledCount(element)}}/{{element.capacity}}</span>
       </td>
     </ng-container>
 
@@ -55,9 +55,9 @@
       <td mat-cell *matCellDef="let element">
         <span class="availability-badge" 
               [ngClass]="{
-                'available': element.currentSize < element.capacity * 0.8,
-                'almost-full': element.currentSize >= element.capacity * 0.8 && element.currentSize < element.capacity,
-                'full': element.currentSize >= element.capacity
+                'available': getEnrolledCount(element) < element.capacity * 0.8,
+                'almost-full': getEnrolledCount(element) >= element.capacity * 0.8 && getEnrolledCount(element) < element.capacity,
+                'full': getEnrolledCount(element) >= element.capacity
               }">
           {{getAvailabilityText(element)}}
         </span>

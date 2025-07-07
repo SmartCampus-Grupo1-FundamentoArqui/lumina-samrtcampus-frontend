@@ -68,4 +68,34 @@ export class CoursesService {
       })
     );
   }
+
+  // Obtener todos los cursos de un profesor
+  getCoursesByTeacher(teacherId: number): Observable<Course[]> {
+    return this.http.get<Course[]>(`${this.apiUrl}/teacher/${teacherId}`, { headers: this.getAuthHeaders() }).pipe(
+      catchError(error => {
+        console.error('Error fetching courses by teacher:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // Obtener la relación curso-profesor específica
+  getCourseTeacher(courseId: number, teacherId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${courseId}/teacher/${teacherId}`, { headers: this.getAuthHeaders() }).pipe(
+      catchError(error => {
+        console.error('Error fetching course-teacher relation:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // Asignar un profesor a un curso
+  assignTeacherToCourse(courseId: number, teacherId: number) {
+    return this.http.put(`${this.apiUrl}/${courseId}/assign-teacher`, { teacherId }, { headers: this.getAuthHeaders() }).pipe(
+      catchError(error => {
+        console.error('Error assigning teacher to course:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 }

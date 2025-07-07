@@ -61,62 +61,56 @@
       <mat-nav-list>
         <h3 mat-subheader>PRINCIPAL</h3>
 
-        <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active">
-          <mat-icon mat-list-icon>
-            apartment
-          </mat-icon>
-          <p mat-line> Classrooms </p>
-        </a>
+        <!-- Opciones para TEACHER -->
+        <ng-container *ngIf="isTeacher">
+          <a mat-list-item [routerLink]="['/attendance']" routerLinkActive="active">
+            <mat-icon mat-list-icon>apartment</mat-icon>
+            <p mat-line>Attendance </p>
+          </a>
+          <a mat-list-item [routerLink]="['/courses']" routerLinkActive="active">
+            <mat-icon mat-list-icon>menu_book</mat-icon>
+            <p mat-line>Courses</p>
+          </a>
+          <a mat-list-item [routerLink]="['/customers']" routerLinkActive="active">
+            <mat-icon mat-list-icon>assessment</mat-icon>
+            <p mat-line> All reports </p>
+          </a>
+        </ng-container>
 
-        <a mat-list-item [routerLink]="['/customers']" routerLinkActive="active">
-          <mat-icon mat-list-icon>
-            All reports
-          </mat-icon>
-          <p mat-line> All reports </p>
-        </a>
-        <a mat-list-item [routerLink]="['/maintenance']" routerLinkActive="active">
-          <mat-icon mat-list-icon>
-            Maintenance
-          </mat-icon>
-          <p mat-line> Maintenance </p>
-        </a>
+        <!-- Opciones para ADMIN -->
+        <ng-container *ngIf="isAdmin">
+          <a mat-list-item [routerLink]="['/maintenance']" routerLinkActive="active">
+            <mat-icon mat-list-icon>build</mat-icon>
+            <p mat-line> Maintenance </p>
+          </a>
+          <a mat-list-item [routerLink]="['/students']" routerLinkActive="active">
+            <mat-icon mat-list-icon>group</mat-icon>
+            <p mat-line> Students </p>
+          </a>
+          <a mat-list-item [routerLink]="['/teachers']" routerLinkActive="active">
+            <mat-icon mat-list-icon>person</mat-icon>
+            <p mat-line> Teachers </p>
+          </a>
+          <a mat-list-item [routerLink]="['/academic-grades']" routerLinkActive="active">
+            <mat-icon mat-list-icon>school</mat-icon>
+            <p mat-line> Grados Académicos </p>
+          </a>
+          <a mat-list-item [routerLink]="['/classroom-capacity']" routerLinkActive="active">
+            <mat-icon mat-list-icon>people</mat-icon>
+            <p mat-line> Class Capacity </p>
+          </a>
+          <a mat-list-item [routerLink]="['/classroom-courses']" routerLinkActive="active">
+            <mat-icon mat-list-icon>menu_book</mat-icon>
+            <p mat-line> Classroom Courses </p>
+          </a>
+        </ng-container>
 
-        <a mat-list-item [routerLink]="['/attendance']" routerLinkActive="active">
-          <mat-icon mat-list-icon>
-            fact_check
-          </mat-icon>
-          <p mat-line> Attendance </p>
-        </a>
-
+        <!-- Ítems comunes para ambos roles -->
         <a mat-list-item [routerLink]="['/account/profile']">
           <mat-icon mat-list-icon>person</mat-icon>
           <p mat-line> Account </p>
         </a>
-
-        <a mat-list-item [routerLink]="['/students']">
-          <mat-icon mat-list-icon>Classroom setup</mat-icon>
-          <p mat-line> Students </p>
-        </a>
-        <a mat-list-item [routerLink]="['/teachers']">
-          <mat-icon mat-list-icon>Teachers</mat-icon>
-          <p mat-line> Teachers </p>
-        </a>
-
-        <a mat-list-item [routerLink]="['/academic-grades']">
-          <mat-icon mat-list-icon>school</mat-icon>
-          <p mat-line> Grados Académicos </p>
-        </a>
-
-          <a mat-list-item [routerLink]="['/classroom-capacity']">
-              <mat-icon mat-list-icon>Teachers</mat-icon>
-              <p mat-line> Class Capacity </p>
-          </a>
-          <a mat-list-item [routerLink]="['/classroom-courses']">
-              <mat-icon mat-list-icon>Teachers</mat-icon>
-              <p mat-line> Classroom Courses </p>
-          </a>
         <mat-divider style="padding-top: 20px; border-color: transparent"></mat-divider>
-
         <h3 mat-subheader>Preferences</h3>
 
         <a mat-list-item [routerLink]="['/icons']" routerLinkActive="active">

@@ -1,0 +1,38 @@
+<h2 mat-dialog-title>Cursos asignados a {{ data.teacherName }}</h2>
+<mat-dialog-content>
+  <button mat-stroked-button color="accent" (click)="showAllCourses()" *ngIf="!showAll">Asignar cursos a este profesor</button>
+  <button mat-stroked-button color="primary" (click)="hideAllCourses()" *ngIf="showAll">Ver solo asignados</button>
+
+  <ng-container *ngIf="!showAll">
+    <ul *ngIf="data.courses.length > 0; else noCourses">
+      <li *ngFor="let course of data.courses">
+        {{ course.name }} (ID: {{ course.id }})
+        <button mat-button color="primary" (click)="assignTeacher(course.id)" [disabled]="loadingAssign === course.id">
+          Asignar a este profesor
+          <mat-progress-spinner *ngIf="loadingAssign === course.id" diameter="20" mode="indeterminate"></mat-progress-spinner>
+        </button>
+      </li>
+    </ul>
+    <ng-template #noCourses>
+      <p>No hay cursos asignados.</p>
+    </ng-template>
+  </ng-container>
+
+  <ng-container *ngIf="showAll">
+    <ul *ngIf="allCourses.length > 0; else loadingCourses">
+      <li *ngFor="let course of allCourses">
+        {{ course.name }} (ID: {{ course.id }})
+        <button mat-button color="primary" (click)="assignTeacher(course.id)" [disabled]="loadingAssign === course.id">
+          Asignar a este profesor
+          <mat-progress-spinner *ngIf="loadingAssign === course.id" diameter="20" mode="indeterminate"></mat-progress-spinner>
+        </button>
+      </li>
+    </ul>
+    <ng-template #loadingCourses>
+      <p>Cargando cursos...</p>
+    </ng-template>
+  </ng-container>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onClose()">Cerrar</button>
+</mat-dialog-actions>

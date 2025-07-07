@@ -1,6 +1,8 @@
 // infrastructure/pages/classroom-capacity/classroom-capacity.component.ts
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Classroom } from '../../model/classroom.entity';
+import { StudentsService, Student } from '../../services/students.service';
+import { ClassroomStudentCountMap } from '../../model/classroom-student-count-map';
 import { ClassroomsService } from '../../services/classrooms.service';
 import { MatDialog } from "@angular/material/dialog";
 import { ClassroomCreateFormComponent } from "../../components/classroom-create-form/classroom-create-form.component";
@@ -15,16 +17,38 @@ export class ClassroomCapacityComponent implements OnInit {
   dataSource: Classroom[] = [];
   displayedColumns: string[] = ['section', 'classroom', 'grade', 'gradeId', 'capacity', 'currentSize', 'availability', 'actions'];
   isLoading = false;
+  studentCountMap: ClassroomStudentCountMap = {};
+
 
   constructor(
     private classroomService: ClassroomsService,
+    private studentsService: StudentsService,
     public dialog: MatDialog,
     private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef
   ) {}
 
+
   ngOnInit() {
     this.loadClassrooms();
+    this.loadStudentCounts();
+  }
+  loadStudentCounts() {
+    this.studentsService.getAll().subscribe({
+      next: (students: Student[]) => {
+        const countMap: ClassroomStudentCountMap = {};
+        students.forEach(student => {
+          if (student.classroomId) {
+            countMap[student.classroomId] = (countMap[student.classroomId] || 0) + 1;
+          }
+        });
+        this.studentCountMap = countMap;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading students for classroom count:', err);
+      }
+    });
   }
 
   openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
@@ -107,8 +131,8 @@ export class ClassroomCapacityComponent implements OnInit {
       next: (data: any) => {
         this.dataSource = data;
         this.isLoading = false;
-        // Forzar detección de cambios después de cargar los datos
         this.cdr.detectChanges();
+        this.loadStudentCounts(); // Refresca el conteo de estudiantes al cargar aulas
         console.log('Classrooms loaded with grade data:', data);
       },
       error: (err: any) => {
@@ -117,5 +141,8 @@ export class ClassroomCapacityComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+  getEnrolledCount(classroom: Classroom): number {
+    return this.studentCountMap[classroom.id] || 0;
   }
 }

@@ -9,8 +9,8 @@
         <mat-select formControlName="classroomId" required>
           <mat-option *ngFor="let classroom of classrooms" [value]="classroom.id">
             Section {{ classroom.section }} ({{ classroom.roomNumber }}) - 
-            Available: {{ classroom.capacity - classroom.currentSize }}/{{ classroom.capacity }}
-            <span *ngIf="classroom.currentSize >= classroom.capacity" style="color: red;"> - FULL</span>
+            Available: {{ classroom.capacity - getEnrolledCount(classroom) }}/{{ classroom.capacity }}
+            <span *ngIf="getEnrolledCount(classroom) >= classroom.capacity" style="color: red;"> - FULL</span>
           </mat-option>
         </mat-select>
         <mat-error *ngIf="studentForm.get('classroomId')?.hasError('required')">

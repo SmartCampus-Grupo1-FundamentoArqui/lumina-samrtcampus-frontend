@@ -1,0 +1,25 @@
+.courses-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+}
+.course-card {
+  width: 300px;
+}
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+.error-message {
+  color: red;
+  text-align: center;
+  margin-top: 20px;
+}
+.no-courses {
+  text-align: center;
+  margin-top: 20px;
+  color: #888;
+}

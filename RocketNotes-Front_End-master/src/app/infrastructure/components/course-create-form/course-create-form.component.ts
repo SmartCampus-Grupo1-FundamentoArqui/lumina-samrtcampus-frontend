@@ -102,10 +102,30 @@ export class CourseCreateFormComponent implements OnInit {
 
   onSubmit() {
     if (this.courseForm.form.valid) {
+      // Adaptar teacherId para el backend: null si no se selecciona, number si se selecciona
+      if (
+        this.course.teacherId === undefined ||
+        this.course.teacherId === null
+      ) {
+        delete this.course.teacherId;
+      } else {
+        this.course.teacherId = Number(this.course.teacherId);
+      }
       if (this.editMode) {
-        // Aquí podrías implementar la lógica de actualización si es necesario
-        this.courseUpdated.emit(this.course);
-        this.resetEditState();
+        // Llamar al servicio para actualizar el curso en el backend
+        this.coursesService.update(this.course.id!.toString(), this.course).subscribe({
+          next: (updatedCourse) => {
+            this.courseUpdated.emit(updatedCourse);
+            if (this.dialogRef) {
+              this.dialogRef.close();
+            }
+            this.resetEditState();
+          },
+          error: (err) => {
+            console.error('Error actualizando curso:', err);
+            // Aquí podrías mostrar un mensaje de error al usuario
+          }
+        });
       } else {
         this.coursesService.create(this.course).subscribe({
           next: (createdCourse) => {

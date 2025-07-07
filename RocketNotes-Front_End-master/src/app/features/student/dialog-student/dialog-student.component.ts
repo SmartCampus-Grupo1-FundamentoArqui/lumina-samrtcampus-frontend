@@ -3,8 +3,10 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { ClassroomsService } from '../../../infrastructure/services/classrooms.service';
 import { Classroom } from '../../../infrastructure/model/classroom.entity';
+import { StudentsService, Student } from '../../../infrastructure/services/students.service';
+import { ClassroomStudentCountMap } from '../../../infrastructure/model/classroom-student-count-map';
 
-export interface Student {
+export interface StudentFormData {
   classroomId: number;
   dni: string;
   firstName: string;
@@ -22,7 +24,7 @@ export interface Parent {
 }
 
 export interface StudentRegistration {
-  student: Student;
+  student: StudentFormData;
   parent: Parent;
 }
 
@@ -36,12 +38,14 @@ export class DialogStudentComponent implements OnInit {
   studentForm: FormGroup;
   parentForm: FormGroup;
   classrooms: Classroom[] = [];
+  studentCountMap: ClassroomStudentCountMap = {};
 
   constructor(
     public dialogRef: MatDialogRef<DialogStudentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: StudentRegistration,
     private fb: FormBuilder,
-    private classroomsService: ClassroomsService
+    private classroomsService: ClassroomsService,
+    private studentsService: StudentsService
   ) {
     this.studentForm = this.fb.group({
       classroomId: ['', [Validators.required]],
@@ -87,7 +91,7 @@ export class DialogStudentComponent implements OnInit {
       }
 
       // Crear objeto estudiante con todos los campos requeridos
-      const student = {
+      const student: StudentFormData = {
         classroomId: this.studentForm.get('classroomId')?.value,
         dni: this.studentForm.get('dni')?.value,
         firstName: this.studentForm.get('firstName')?.value,
@@ -133,14 +137,14 @@ export class DialogStudentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Cargar la lista de aulas
+    // Cargar la lista de aulas y el conteo real de estudiantes por aula
     this.classroomsService.getAll().subscribe({
       next: (classrooms) => {
         this.classrooms = classrooms;
+        this.loadStudentCounts();
       },
       error: (error) => {
         console.error('Error loading classrooms:', error);
-        // Aquí podrías mostrar un mensaje de error al usuario
       }
     });
 
@@ -152,5 +156,26 @@ export class DialogStudentComponent implements OnInit {
         this.parentForm.patchValue(this.data.parent);
       }
     }
+  }
+
+  loadStudentCounts() {
+    this.studentsService.getAll().subscribe({
+      next: (students: Student[]) => {
+        const countMap: ClassroomStudentCountMap = {};
+        students.forEach(student => {
+          if (student.classroomId) {
+            countMap[student.classroomId] = (countMap[student.classroomId] || 0) + 1;
+          }
+        });
+        this.studentCountMap = countMap;
+      },
+      error: (err) => {
+        console.error('Error loading students for classroom count:', err);
+      }
+    });
+  }
+
+  getEnrolledCount(classroom: Classroom): number {
+    return this.studentCountMap[classroom.id] || 0;
   }
 }

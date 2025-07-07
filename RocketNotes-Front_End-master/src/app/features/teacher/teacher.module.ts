@@ -10,13 +10,17 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TeacherCoursesDialogComponent } from './teacher-courses-dialog/teacher-courses-dialog.component';
 
 
 
 @NgModule({
   declarations: [
     TeachersComponent,
-    DialogTeacherComponent
+    DialogTeacherComponent,
+    TeacherCoursesDialogComponent
   ],
     imports: [
         CommonModule,
@@ -28,7 +32,9 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
         MatFormFieldModule,
         MatInputModule,
         ReactiveFormsModule,
-        FormsModule
+        FormsModule,
+        MatSnackBarModule,
+        MatProgressSpinnerModule
     ]
 })
 export class TeacherModule { }

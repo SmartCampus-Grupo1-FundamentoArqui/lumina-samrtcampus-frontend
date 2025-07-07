@@ -51,6 +51,9 @@
                 <button mat-icon-button color="warn" (click)="onDeleteItem(element)" matTooltip="Eliminar profesor (No disponible)" [disabled]="true">
                     <mat-icon>delete</mat-icon>
                 </button>
+                <button mat-icon-button color="accent" (click)="onShowCourses(element)" matTooltip="Ver cursos">
+                    <mat-icon>school</mat-icon>
+                </button>
             </td>
         </ng-container>
 
@@ -60,4 +63,14 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
+</div>
+<div *ngIf="showCourses" class="courses-list">
+    <h2>Cursos del Profesor</h2>
+    <button (click)="onHideCourses()">Cerrar</button>
+    <ul>
+        <li *ngFor="let course of selectedTeacherCourses">
+            {{ course.name }} (ID: {{ course.id }})
+        </li>
+        <li *ngIf="selectedTeacherCourses.length === 0">No hay cursos asignados.</li>
+    </ul>
 </div>
