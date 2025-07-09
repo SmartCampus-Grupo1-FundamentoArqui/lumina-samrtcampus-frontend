@@ -7,6 +7,7 @@ import {AcademicGradesService, AcademicGrade} from "../../../core/services/acade
 import {ClassroomsService} from "../../services/classrooms.service";
 import {TeacherService} from "../../../features/teacher/service/teacher.service";
 import {CoursesService} from '../../services/courses.service';
+import { ScheduleService } from '../../../core/services/schedule.service';
 
 @Component({
   selector: 'app-course-create-form',
@@ -34,6 +35,7 @@ export class CourseCreateFormComponent implements OnInit {
     private teacherService: TeacherService,
     private classroomsService: ClassroomsService,
     private coursesService: CoursesService,
+    private scheduleService: ScheduleService,
     private cdr: ChangeDetectorRef,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
     @Optional() public dialogRef?: MatDialogRef<CourseCreateFormComponent>
@@ -100,49 +102,53 @@ export class CourseCreateFormComponent implements OnInit {
 
   // Event Handlers
 
-  onSubmit() {
-    if (this.courseForm.form.valid) {
-      // Adaptar teacherId para el backend: null si no se selecciona, number si se selecciona
-      if (
-        this.course.teacherId === undefined ||
-        this.course.teacherId === null
-      ) {
-        delete this.course.teacherId;
-      } else {
-        this.course.teacherId = Number(this.course.teacherId);
-      }
-      if (this.editMode) {
-        // Llamar al servicio para actualizar el curso en el backend
-        this.coursesService.update(this.course.id!.toString(), this.course).subscribe({
-          next: (updatedCourse) => {
-            this.courseUpdated.emit(updatedCourse);
-            if (this.dialogRef) {
-              this.dialogRef.close();
-            }
-            this.resetEditState();
-          },
-          error: (err) => {
-            console.error('Error actualizando curso:', err);
-            // Aquí podrías mostrar un mensaje de error al usuario
+  onSubmit(): void {
+    if (!this.course.name || !this.course.classroomId || !this.course.schedule) {
+      return;
+    }
+    if (this.editMode) {
+      this.coursesService.update(String(this.course.id), this.course).subscribe({
+        next: (updatedCourse) => {
+          this.courseUpdated.emit(updatedCourse);
+          if (this.dialogRef) {
+            this.dialogRef.close();
           }
-        });
-      } else {
-        this.coursesService.create(this.course).subscribe({
-          next: (createdCourse) => {
-            this.courseAdded.emit(createdCourse);
-            if (this.dialogRef) {
-              this.dialogRef.close();
-            }
-            this.resetEditState();
-          },
-          error: (err) => {
-            console.error('Error creating course:', err);
-            // Aquí podrías mostrar un mensaje de error al usuario
-          }
-        });
-      }
+          this.resetEditState();
+        },
+        error: (err) => {
+          console.error('Error actualizando curso:', err);
+        }
+      });
     } else {
-      console.log('invalid data');
+      this.coursesService.create(this.course).subscribe({
+        next: (createdCourse) => {
+          // Parseo simple del horario: "Lun-mie 15:30" => dayOfWeek: "Lun-mie", startTime: "15:30"
+          let dayOfWeek = '';
+          let startTime = '';
+          if (this.course.schedule) {
+            const parts = this.course.schedule.split(' ');
+            if (parts.length === 2) {
+              dayOfWeek = parts[0];
+              startTime = parts[1];
+            }
+          }
+          this.scheduleService.create({
+            teacherId: String(this.course.teacherId),
+            schedule: this.course.schedule
+          }).subscribe({
+            next: () => {},
+            error: (err) => { console.error('Error creating schedule:', err); }
+          });
+          this.courseAdded.emit(createdCourse);
+          if (this.dialogRef) {
+            this.dialogRef.close();
+          }
+          this.resetEditState();
+        },
+        error: (err) => {
+          console.error('Error creating course:', err);
+        }
+      });
     }
   }
 

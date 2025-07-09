@@ -16,6 +16,11 @@ export interface Schedule {
   year: number;
 }
 
+export interface ScheduleValidationRequest {
+  teacherId: string;
+  schedule: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -69,8 +74,8 @@ export class ScheduleService {
     );
   }
 
-  create(schedule: Schedule): Observable<Schedule> {
-    return this.http.post<Schedule>(this.apiUrl, schedule, { headers: this.getAuthHeaders() }).pipe(
+  create(schedule: ScheduleValidationRequest): Observable<any> {
+    return this.http.post<any>(this.apiUrl, schedule, { headers: this.getAuthHeaders() }).pipe(
       catchError(error => {
         console.error('Error creating schedule:', error);
         return throwError(() => error);
@@ -95,4 +100,4 @@ export class ScheduleService {
       })
     );
   }
-} 
+}
