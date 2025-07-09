@@ -98,6 +98,16 @@ export class AttendanceService {
     );
   }
 
+  // Actualizar o agregar asistencias de todos los alumnos de una sesión
+  updateFullSession(sessionId: number, request: AttendanceSessionRequest): Observable<AttendanceSession> {
+    return this.http.put<AttendanceSession>(`${this.apiUrl}/${sessionId}/full-update`, request, { headers: this.getAuthHeaders() }).pipe(
+      catchError(error => {
+        console.error('Error updating full session:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
   // Obtener historial por curso y semana
   getHistoryByCourseAndWeek(courseId: number, week: number): Observable<AttendanceSession[]> {
     return this.http.get<AttendanceSession[]>(`${this.apiUrl}/history?courseId=${courseId}&week=${week}`, { headers: this.getAuthHeaders() }).pipe(

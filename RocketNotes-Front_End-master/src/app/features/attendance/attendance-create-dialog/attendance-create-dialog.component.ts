@@ -214,9 +214,17 @@ export class AttendanceCreateDialogComponent implements OnInit {
       };
       console.log('AttendanceSessionRequest to send:', request);
 
-      if (this.isEditMode) {
-        // Handle updates for individual student attendance
-        this.handleAttendanceUpdates();
+      if (this.isEditMode && this.data.session && this.data.session.id !== undefined) {
+        // Usar el nuevo endpoint para actualizar toda la sesión
+        this.attendanceService.updateFullSession(Number(this.data.session.id), request).subscribe({
+          next: (result) => {
+            this.dialogRef.close(result);
+          },
+          error: (error) => {
+            console.error('Error updating full attendance session:', error);
+            this.snackBar.open('Error updating attendance session', 'Close', { duration: 3000 });
+          }
+        });
       } else {
         this.attendanceService.createSession(request).subscribe({
           next: (result) => {

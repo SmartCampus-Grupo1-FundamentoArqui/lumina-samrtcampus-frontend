@@ -80,6 +80,7 @@ export class AttendanceListComponent implements OnInit {
     // Siempre cargar solo las sesiones del profesor autenticado
     this.attendanceService.getSessionsByTeacher(this.currentUser.id).subscribe({
       next: (sessions) => {
+        console.log('Sesiones de asistencia recibidas:', sessions);
         this.attendanceSessions = sessions;
       },
       error: (error) => {
