@@ -20,6 +20,8 @@ export class AttendanceListComponent implements OnInit {
   attendanceSessions: AttendanceSession[] = [];
   displayedColumns: string[] = ['date', 'course', 'classroom', 'totalStudents', 'presentCount', 'absentCount', 'actions'];
   currentUser: any;
+  coursesMap: { [id: string]: string } = {};
+  classroomsMap: { [id: string]: string } = {};
 
   constructor(
     private attendanceService: AttendanceService,
@@ -34,22 +36,57 @@ export class AttendanceListComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
-    this.loadAttendanceSessions();
+    console.log('Usuario autenticado:', this.currentUser);
+    if (this.currentUser.role && this.currentUser.role.toLowerCase() === 'teacher' && isNaN(Number(this.currentUser.id))) {
+      this.teacherService.getAll().subscribe(teachers => {
+        console.log('Lista de profesores:', teachers);
+        // Normalizar emails para comparación
+        const userEmail = (this.currentUser.email || this.currentUser.id || '').trim().toLowerCase();
+        const found = teachers.find(t => (t.email || '').trim().toLowerCase() === userEmail);
+        if (found) {
+          console.log('Profesor encontrado:', found);
+          this.currentUser.id = found.id;
+          localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+          this.loadAttendanceSessions();
+        } else {
+          console.error('No se encontró el profesor con email:', userEmail);
+          this.showMessage('No se encontró el profesor con el email actual');
+        }
+      }, err => {
+        console.error('Error al obtener profesores:', err);
+        if (err && err.error) {
+          console.error('Detalle del error:', err.error);
+        }
+        this.showMessage('Error al obtener la lista de profesores');
+      });
+    } else {
+      this.loadAttendanceSessions();
+    }
+    this.coursesService.getAll().subscribe(courses => {
+      this.coursesMap = {};
+      for (const c of courses) {
+        this.coursesMap[String(c.id)] = c.name;
+      }
+    });
+    this.classroomsService.getAll().subscribe(classrooms => {
+      this.classroomsMap = {};
+      for (const cl of classrooms) {
+        this.classroomsMap[String(cl.id)] = `${cl.section} - ${cl.roomNumber}`;
+      }
+    });
   }
 
   loadAttendanceSessions(): void {
-    // Si es un profesor, cargar solo sus sesiones
-    if (this.currentUser.role === 'teacher') {
-      this.attendanceService.getSessionsByTeacher(this.currentUser.id).subscribe({
-        next: (sessions) => {
-          this.attendanceSessions = sessions;
-        },
-        error: (error) => {
-          console.error('Error loading attendance sessions:', error);
-          this.showMessage('Error al cargar las sesiones de asistencia');
-        }
-      });
-    }
+    // Siempre cargar solo las sesiones del profesor autenticado
+    this.attendanceService.getSessionsByTeacher(this.currentUser.id).subscribe({
+      next: (sessions) => {
+        this.attendanceSessions = sessions;
+      },
+      error: (error) => {
+        console.error('Error loading attendance sessions:', error);
+        this.showMessage('Error al cargar las sesiones de asistencia');
+      }
+    });
   }
 
   openCreateDialog(): void {
@@ -94,6 +131,13 @@ export class AttendanceListComponent implements OnInit {
     return session.studentAttendances.filter(attendance => 
       attendance.status === AttendanceStatus.ABSENT
     ).length;
+  }
+
+  getCourseName(courseId: string | number): string {
+    return this.coursesMap[String(courseId)] || `ID: ${courseId}`;
+  }
+  getClassroomName(classroomId: string | number): string {
+    return this.classroomsMap[String(classroomId)] || `ID: ${classroomId}`;
   }
 
   private showMessage(message: string): void {

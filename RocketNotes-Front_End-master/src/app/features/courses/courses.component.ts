@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CoursesService } from 'src/app/infrastructure/services/courses.service';
 import { TeacherService } from 'src/app/infrastructure/services/teacher.service';
 import { Course } from 'src/app/infrastructure/model/course.entity';
@@ -15,10 +16,12 @@ export class CoursesComponent implements OnInit {
 
   constructor(
     private coursesService: CoursesService,
-    private teacherService: TeacherService
+    private teacherService: TeacherService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
+    console.log('CoursesComponent cargado');
     const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
     const email = user.email;
     if (!email) {
@@ -49,5 +52,9 @@ export class CoursesComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  onCourseClick(course: Course) {
+    this.router.navigate(['courses/detail', course.id]);
   }
 }

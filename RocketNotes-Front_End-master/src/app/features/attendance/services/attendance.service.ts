@@ -107,4 +107,14 @@ export class AttendanceService {
       })
     );
   }
+
+  // Obtener todas las sesiones de asistencia
+  getAllSessions(): Observable<AttendanceSession[]> {
+    return this.http.get<AttendanceSession[]>(this.apiUrl, { headers: this.getAuthHeaders() }).pipe(
+      catchError(error => {
+        console.error('Error fetching all attendance sessions:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 }

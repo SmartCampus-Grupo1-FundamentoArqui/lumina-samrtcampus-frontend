@@ -31,6 +31,7 @@ import { RegisterComponent } from './features/auth/register/register.component';
 import {MatRadioModule} from "@angular/material/radio";
 import { CourseDetailComponent } from './infrastructure/pages/course-detail/course-detail.component';
 import { FacilitieModule } from './features/facilitie/facilitie.module';
+import { CourseGradebookComponent } from './infrastructure/pages/course-gradebook/course-gradebook.component';
 
 
 @NgModule({
@@ -42,6 +43,7 @@ import { FacilitieModule } from './features/facilitie/facilitie.module';
     CourseCreateFormComponent,
     CourseDetailComponent,
     RegisterComponent,
+    CourseGradebookComponent,
 
   ],
 

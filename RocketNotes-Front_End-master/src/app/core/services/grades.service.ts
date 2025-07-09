@@ -13,6 +13,15 @@ export interface Grade {
   year: number;
   gradeType?: string;
   date?: Date;
+  // Añadido para integración con GradeEntry
+  nota1?: number | undefined;
+  nota2?: number | undefined;
+  nota3?: number | undefined;
+  nota4?: number | undefined;
+  nota5?: number | undefined;
+  nota6?: number | undefined;
+  nota7?: number | undefined;
+  [key: string]: any; // Permite acceso dinámico a las notas
 }
 
 @Injectable({
@@ -68,8 +77,18 @@ export class GradesService {
     );
   }
 
+  getByCourseAndClassroom(courseId: string, classroomId: string): Observable<Grade[]> {
+    return this.http.get<Grade[]>(`${environmentDevelopment.serverBasePath}/gradebook/entries/course/${courseId}/classroom/${classroomId}`, { headers: this.getAuthHeaders() }).pipe(
+      catchError(error => {
+        console.error('Error fetching grades by course and classroom:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
   create(grade: Grade): Observable<Grade> {
-    return this.http.post<Grade>(this.apiUrl, grade, { headers: this.getAuthHeaders() }).pipe(
+    // POST al endpoint correcto del microservicio
+    return this.http.post<Grade>(`${environmentDevelopment.serverBasePath}/gradebook/entries`, grade, { headers: this.getAuthHeaders() }).pipe(
       catchError(error => {
         console.error('Error creating grade:', error);
         return throwError(() => error);
@@ -94,4 +113,4 @@ export class GradesService {
       })
     );
   }
-} 
+}

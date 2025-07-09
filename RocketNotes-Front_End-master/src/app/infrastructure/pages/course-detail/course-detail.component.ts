@@ -13,6 +13,11 @@ export class CourseDetailComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,private router: Router, private courseService: CoursesService) { }
 
+  isTeacher(): boolean {
+    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    return user && user.role && user.role.toLowerCase() === 'teacher';
+  }
+
   ngOnInit() {
     const courseId = this.route.snapshot.paramMap.get('id');
     if (courseId) {
@@ -26,5 +31,15 @@ export class CourseDetailComponent implements OnInit {
   }
   goToDetailCoursesView() {
     this.router.navigate(['course-detail/course-detail']);
+  }
+  goToGradebook() {
+    if (this.course && this.course.id) {
+      this.router.navigate(['../../gradebook', this.course.id], { relativeTo: this.route });
+    }
+  }
+  goToViewNotas() {
+    if (this.course && this.course.id) {
+      this.router.navigate(['../../gradebook', this.course.id, { view: true }], { relativeTo: this.route });
+    }
   }
 }

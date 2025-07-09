@@ -20,6 +20,7 @@ export class CoursesViewComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('CoursesViewComponent cargado');
     this.route.paramMap.subscribe(params => {
       const classroomIdParam = params.get('classroomId');
       this.classroomId = classroomIdParam ? +classroomIdParam : null;
@@ -40,8 +41,7 @@ export class CoursesViewComponent implements OnInit {
     });
   }
   viewCourseDetails(course: Course) {
-
-    this.router.navigate(['courses-view/course-detail', course.id]);
+    this.router.navigate(['/course-detail', course.id]);
   }
   openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
     const dialogRef: MatDialogRef<CourseCreateFormComponent> = this.dialog.open(CourseCreateFormComponent, {

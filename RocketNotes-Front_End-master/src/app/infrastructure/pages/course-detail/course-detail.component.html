@@ -5,4 +5,6 @@
     <p>ID del Aula: {{ course.classroomId }}</p>
     <p>Horario: {{ course.schedule }}</p>
     <button mat-raised-button color="primary" (click)="goToDetailCoursesView()">Volver a Cursos</button>
+    <button mat-raised-button color="accent" *ngIf="isTeacher()" (click)="goToGradebook()">Gestionar Notas</button>
+    <button mat-raised-button color="warn" (click)="goToViewNotas()">Ver Notas</button>
 </div>

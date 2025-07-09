@@ -4,7 +4,8 @@ import {ClassroomCapacityComponent} from "./infrastructure/pages/classroom-capac
 import {ClassroomStudentsComponent} from "./infrastructure/pages/classroom-students/classroom-students.component";
 import {ClassroomCoursesComponent} from "./infrastructure/pages/classroom-courses/classroom-courses.component";
 import {CoursesViewComponent} from "./infrastructure/pages/courses-view/courses-view.component";
-
+import { CourseGradebookComponent } from './infrastructure/pages/course-gradebook/course-gradebook.component';
+import { CourseDetailComponent } from './infrastructure/pages/course-detail/course-detail.component';
 
 import { AuthGuard } from './core/guards/auth.guard';
 
@@ -84,6 +85,16 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'course-detail/:id',
+    component: CourseDetailComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'course-gradebook/:id',
+    component: CourseGradebookComponent,
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'about',
     loadChildren: () => import('./features/about/about.module').then(m => m.AboutModule),
     canActivate: [AuthGuard]
@@ -95,7 +106,7 @@ const appRoutes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'classrooms',
+    redirectTo: 'courses',
     pathMatch: 'full'
   },
   {path:'capacity', component: ClassroomCapacityComponent},

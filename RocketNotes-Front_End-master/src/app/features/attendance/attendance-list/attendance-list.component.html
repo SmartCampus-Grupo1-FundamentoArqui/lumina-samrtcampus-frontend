@@ -19,19 +19,19 @@
       <!-- Date Column -->
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef>Date</th>
-        <td mat-cell *matCellDef="let session">{{session.date | date:'shortDate'}}</td>
+        <td mat-cell *matCellDef="let session">{{session.date | date:'dd/MM/yyyy'}}</td>
       </ng-container>
 
       <!-- Course Column -->
       <ng-container matColumnDef="course">
         <th mat-header-cell *matHeaderCellDef>Course</th>
-        <td mat-cell *matCellDef="let session">Course ID: {{session.courseId}}</td>
+        <td mat-cell *matCellDef="let session">{{getCourseName(session.courseId)}}</td>
       </ng-container>
 
       <!-- Classroom Column -->
       <ng-container matColumnDef="classroom">
         <th mat-header-cell *matHeaderCellDef>Classroom</th>
-        <td mat-cell *matCellDef="let session">Classroom ID: {{session.classroomId}}</td>
+        <td mat-cell *matCellDef="let session">{{getClassroomName(session.classroomId)}}</td>
       </ng-container>
 
       <!-- Total Students Column -->

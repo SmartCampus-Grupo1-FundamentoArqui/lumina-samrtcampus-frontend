@@ -14,6 +14,7 @@ import { CoursesService } from '../../../infrastructure/services/courses.service
 import { Course } from '../../../infrastructure/model/course.entity';
 import { ClassroomsService } from '../../../infrastructure/services/classrooms.service';
 import { Classroom } from '../../../infrastructure/model/classroom.entity';
+import { TeacherService } from '../../teacher/service/teacher.service';
 
 export interface DialogData {
   currentUser: any;
@@ -43,20 +44,38 @@ export class AttendanceCreateDialogComponent implements OnInit {
     private studentsService: StudentsService,
     private coursesService: CoursesService,
     private classroomsService: ClassroomsService,
+    private teacherService: TeacherService,
     private snackBar: MatSnackBar
   ) {
     this.isEditMode = data.isEdit || false;
     this.attendanceForm = this.fb.group({
       courseId: ['', Validators.required],
       classroomId: ['', Validators.required],
-      teacherId: [data.currentUser.id, Validators.required],
+      teacherId: [null, Validators.required], // Inicializar como null
       date: ['', Validators.required]
     });
   }
 
   ngOnInit(): void {
     this.loadInitialData();
-    
+    // Obtener el ID del profesor por email antes de usar el formulario
+    if (this.data.currentUser && this.data.currentUser.email) {
+      this.teacherService.getAll().subscribe({
+        next: (teachers: import('../../teacher/service/teacher.service').Teacher[]) => {
+          const found = teachers.find((t: import('../../teacher/service/teacher.service').Teacher) => t.email === this.data.currentUser.email);
+          if (found) {
+            this.attendanceForm.patchValue({ teacherId: found.id });
+            console.log('Teacher ID resolved for attendance:', found.id);
+          } else {
+            console.warn('No teacher found with email:', this.data.currentUser.email);
+          }
+        },
+        error: (err: any) => {
+          console.error('Error fetching teachers for attendance:', err);
+        }
+      });
+    }
+
     if (this.isEditMode && this.data.session) {
       this.populateFormForEdit();
     }
@@ -116,13 +135,25 @@ export class AttendanceCreateDialogComponent implements OnInit {
         date: this.data.session.date
       });
 
-      // Populate student attendance
-      this.selectedStudents = this.data.session.studentAttendances.map(attendance => ({
-        attendanceId: attendance.id,
-        studentId: attendance.studentId,
-        studentName: `Student ${attendance.studentId}`, // You might want to load actual names
-        status: attendance.status
-      }));
+      // Asegurarse de que los estudiantes estén cargados antes de mapear nombres
+      this.studentsService.getAll().subscribe({
+        next: (students: Student[]) => {
+          this.students = students.filter(student => student.classroomId === this.data.session!.classroomId);
+          // Mapear los nombres reales de los alumnos
+          this.selectedStudents = this.data.session!.studentAttendances.map(attendance => {
+            const found = this.students.find(s => s.id === attendance.studentId);
+            return {
+              attendanceId: attendance.id,
+              studentId: attendance.studentId,
+              studentName: found ? `${found.firstName} ${found.lastNameFather} ${found.lastNameMother}` : `Student ${attendance.studentId}`,
+              status: attendance.status
+            };
+          });
+        },
+        error: (error) => {
+          console.error('Error loading students for edit:', error);
+        }
+      });
     }
   }
 
@@ -161,6 +192,8 @@ export class AttendanceCreateDialogComponent implements OnInit {
   onSubmit(): void {
     if (this.attendanceForm.valid && this.selectedStudents.length > 0) {
       const formValue = this.attendanceForm.value;
+      console.log('Attendance form value:', formValue);
+      console.log('Selected students:', this.selectedStudents);
       
       const attendances: StudentAttendanceDTO[] = this.selectedStudents.map(student => ({
         studentId: student.studentId,
@@ -174,6 +207,7 @@ export class AttendanceCreateDialogComponent implements OnInit {
         date: formValue.date,
         attendances: attendances
       };
+      console.log('AttendanceSessionRequest to send:', request);
 
       if (this.isEditMode) {
         // Handle updates for individual student attendance

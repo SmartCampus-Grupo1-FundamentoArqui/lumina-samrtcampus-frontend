@@ -1,0 +1,52 @@
+<div *ngIf="isLoading">Cargando...</div>
+<div *ngIf="!isLoading && course">
+  <h2>Notas para el curso: {{ course.name }}</h2>
+  <div class="gradebook-container">
+    <!-- Tabla de ingreso de notas solo si NO es resumen -->
+    <ng-container *ngIf="!showResumen">
+      <table mat-table [dataSource]="students" class="mat-elevation-z8 gradebook-table">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Alumno</th>
+          <td mat-cell *matCellDef="let student">
+            {{ student.firstName }} {{ student.lastNameFather }} {{ student.lastNameMother }}
+          </td>
+        </ng-container>
+        <ng-container *ngFor="let n of notas" [matColumnDef]="n">
+          <th mat-header-cell *matHeaderCellDef>Nota {{ n.slice(-1) }}</th>
+          <td mat-cell *matCellDef="let student">
+            <mat-form-field appearance="outline" class="nota-input">
+              <input matInput type="number" [ngModel]="getNota(student.id, n)" (ngModelChange)="onNotaChange(student, n, $event)" min="0" max="20" />
+            </mat-form-field>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="promedio">
+          <th mat-header-cell *matHeaderCellDef>Promedio</th>
+          <td mat-cell *matCellDef="let student">
+            {{ calcularPromedio(student.id) }}
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <button mat-raised-button color="primary" class="save-btn" (click)="onSaveAll()">Guardar Notas</button>
+      <button mat-raised-button color="accent" class="view-btn" (click)="onViewNotas()">Ver Notas</button>
+    </ng-container>
+    <!-- Solo resumen de notas si showResumen -->
+    <div *ngIf="showResumen" class="resumen-notas">
+      <h3>Resumen de Notas</h3>
+      <table>
+        <tr>
+          <th>Alumno</th>
+          <th *ngFor="let n of notas">Nota {{ n.slice(-1) }}</th>
+          <th>Promedio</th>
+        </tr>
+        <tr *ngFor="let student of students">
+          <td>{{ student.firstName }} {{ student.lastNameFather }} {{ student.lastNameMother }}</td>
+          <td *ngFor="let n of notas">{{ getNota(student.id!, n) }}</td>
+          <td>{{ calcularPromedio(student.id!) }}</td>
+        </tr>
+      </table>
+      <button mat-raised-button color="accent" (click)="onViewNotas()">Volver a gestión</button>
+    </div>
+  </div>
+</div>

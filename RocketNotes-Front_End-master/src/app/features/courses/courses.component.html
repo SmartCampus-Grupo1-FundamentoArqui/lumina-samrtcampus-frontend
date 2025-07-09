@@ -9,7 +9,7 @@
     No tienes cursos asignados.
   </div>
   <div class="courses-list" *ngIf="courses.length > 0">
-    <mat-card *ngFor="let course of courses" class="course-card">
+    <mat-card *ngFor="let course of courses" class="course-card clickable" (click)="onCourseClick(course)">
       <mat-card-header>
         <mat-card-title>{{ course.name }}</mat-card-title>
         <mat-card-subtitle>ID: {{ course.id }}</mat-card-subtitle>

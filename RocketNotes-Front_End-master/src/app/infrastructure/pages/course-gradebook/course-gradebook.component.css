@@ -1,0 +1,24 @@
+/* Estilos para la tabla de notas del curso */
+
+.gradebook-container {
+  max-width: 600px;
+  margin: 32px auto 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(30,192,137,0.10), 0 1.5px 4px rgba(0,0,0,0.04);
+  padding: 24px 24px 32px 24px;
+}
+.gradebook-table {
+  width: 100%;
+  margin-bottom: 24px;
+}
+.nota-input {
+  width: 80px;
+}
+.save-btn {
+  display: block;
+  margin: 0 auto;
+  margin-top: 16px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}

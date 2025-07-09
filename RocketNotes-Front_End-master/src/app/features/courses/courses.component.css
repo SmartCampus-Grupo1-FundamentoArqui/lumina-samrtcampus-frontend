@@ -23,3 +23,14 @@
   margin-top: 20px;
   color: #888;
 }
+.course-card.clickable {
+  cursor: pointer;
+  box-shadow: 0 4px 24px rgba(30,192,137,0.18), 0 1.5px 4px rgba(0,0,0,0.04);
+  border: 2px solid transparent;
+  transition: box-shadow 0.2s, border 0.2s, transform 0.1s;
+}
+.course-card.clickable:hover, .course-card.clickable:focus {
+  box-shadow: 0 8px 32px rgba(30,192,137,0.25), 0 3px 8px rgba(0,0,0,0.08);
+  border: 2px solid #1EC089;
+  transform: translateY(-2px) scale(1.02);
+}
