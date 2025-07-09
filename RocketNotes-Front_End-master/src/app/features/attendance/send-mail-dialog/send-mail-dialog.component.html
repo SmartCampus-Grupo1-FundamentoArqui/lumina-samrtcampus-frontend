@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>Enviar correo al padre</h2>
+<form [formGroup]="form">
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Correo del padre</mat-label>
+      <input matInput formControlName="parentEmail" [disabled]="true">
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Asunto</mat-label>
+      <input matInput formControlName="subject" required>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Cuerpo del correo</mat-label>
+      <textarea matInput formControlName="body" rows="5" required></textarea>
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" (click)="onSend()" [disabled]="form.invalid">Enviar</button>
+  </mat-dialog-actions>
+</form>

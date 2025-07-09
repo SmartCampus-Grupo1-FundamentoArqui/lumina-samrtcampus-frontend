@@ -7,12 +7,14 @@ import { AttendanceListComponent } from './attendance-list/attendance-list.compo
 import { AttendanceCreateDialogComponent } from './attendance-create-dialog/attendance-create-dialog.component';
 import { AttendanceHistoryComponent } from './attendance-history/attendance-history.component';
 import { SharedModule } from '../../shared/shared.module';
+import { SendMailDialogComponent } from './send-mail-dialog/send-mail-dialog.component';
 
 @NgModule({
   declarations: [
     AttendanceListComponent,
     AttendanceCreateDialogComponent,
-    AttendanceHistoryComponent
+    AttendanceHistoryComponent,
+    SendMailDialogComponent
   ],
   imports: [
     CommonModule,
@@ -20,6 +22,7 @@ import { SharedModule } from '../../shared/shared.module';
     FormsModule,
     SharedModule,
     AttendanceRoutingModule
-  ]
+  ],
+  entryComponents: [SendMailDialogComponent],
 })
 export class AttendanceModule { }

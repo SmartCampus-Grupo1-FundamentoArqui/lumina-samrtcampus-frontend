@@ -15,6 +15,9 @@ import { Course } from '../../../infrastructure/model/course.entity';
 import { ClassroomsService } from '../../../infrastructure/services/classrooms.service';
 import { Classroom } from '../../../infrastructure/model/classroom.entity';
 import { TeacherService } from '../../teacher/service/teacher.service';
+import { MatDialog } from '@angular/material/dialog';
+import { SendMailDialogComponent } from '../send-mail-dialog/send-mail-dialog.component';
+import { NotificationService } from '../../../core/services/notification.service';
 
 export interface DialogData {
   currentUser: any;
@@ -45,7 +48,9 @@ export class AttendanceCreateDialogComponent implements OnInit {
     private coursesService: CoursesService,
     private classroomsService: ClassroomsService,
     private teacherService: TeacherService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog,
+    private notificationService: NotificationService
   ) {
     this.isEditMode = data.isEdit || false;
     this.attendanceForm = this.fb.group({
@@ -135,18 +140,18 @@ export class AttendanceCreateDialogComponent implements OnInit {
         date: this.data.session.date
       });
 
-      // Asegurarse de que los estudiantes estén cargados antes de mapear nombres
+      // Cargar todos los alumnos del aula y combinar con los de la sesión
       this.studentsService.getAll().subscribe({
         next: (students: Student[]) => {
           this.students = students.filter(student => student.classroomId === this.data.session!.classroomId);
-          // Mapear los nombres reales de los alumnos
-          this.selectedStudents = this.data.session!.studentAttendances.map(attendance => {
-            const found = this.students.find(s => s.id === attendance.studentId);
+          // Mapear todos los alumnos del aula
+          this.selectedStudents = this.students.map(student => {
+            const attendance = this.data.session!.studentAttendances.find(a => a.studentId === student.id);
             return {
-              attendanceId: attendance.id,
-              studentId: attendance.studentId,
-              studentName: found ? `${found.firstName} ${found.lastNameFather} ${found.lastNameMother}` : `Student ${attendance.studentId}`,
-              status: attendance.status
+              attendanceId: attendance ? attendance.id : undefined,
+              studentId: student.id,
+              studentName: `${student.firstName} ${student.lastNameFather} ${student.lastNameMother}`,
+              status: attendance ? attendance.status : AttendanceStatus.PRESENT
             };
           });
         },
@@ -251,5 +256,30 @@ export class AttendanceCreateDialogComponent implements OnInit {
 
   onCancel(): void {
     this.dialogRef.close();
+  }
+
+  openSendMailDialog(student: any): void {
+    const parentEmail = this.getParentEmailForStudent(student.studentId);
+    if (!parentEmail) {
+      this.snackBar.open('No se encontró correo del padre para este estudiante', 'Cerrar', { duration: 3000 });
+      return;
+    }
+    const dialogRef = this.dialog.open(SendMailDialogComponent, {
+      width: '400px',
+      data: { parentEmail }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.notificationService.sendEmail(result).subscribe({
+          next: () => this.snackBar.open('Correo enviado correctamente', 'Cerrar', { duration: 3000 }),
+          error: () => this.snackBar.open('Error al enviar el correo', 'Cerrar', { duration: 3000 })
+        });
+      }
+    });
+  }
+
+  getParentEmailForStudent(studentId: number): string | undefined {
+    const student = this.students.find(s => s.id === studentId);
+    return student && student.parent ? student.parent.email : undefined;
   }
 }
